@@ -5,11 +5,12 @@
 * chess engines. The documentation for the communication protocol can be found here: https://www.shredderchess.com/download.html
 * 
 */
-//
 
 
-#include <iostream>
+
+
 #include <string>
+#include "GameDebug.h"
 
 
 void introduction() {
@@ -104,8 +105,8 @@ int main()
 		//These are user commands for using the engine via CLI
 
 		else if (gui_line == "debug") {
-			//GameDebug db;
-			//db.startGameDebug();
+			GameDebug game_debug;
+			game_debug.game_debug_loop();
 		}
 		else if (gui_line == "help") {
 			list_help_commands();
