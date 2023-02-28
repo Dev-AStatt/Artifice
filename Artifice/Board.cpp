@@ -1,9 +1,9 @@
 #include "Board.h"
+#include <iostream>
+
+
 
 Board::Board() {
-
-    
-
     all_bitboards.emplace_back(&whitePawns);
     all_bitboards.emplace_back(&whiteKnights);
     all_bitboards.emplace_back(&whiteBishops);
@@ -16,13 +16,24 @@ Board::Board() {
     all_bitboards.emplace_back(&blackRooks);
     all_bitboards.emplace_back(&blackQueens);
     all_bitboards.emplace_back(&blackKings);
+
+	all_piece_names.emplace_back(PieceName::WhitePawn);
+	all_piece_names.emplace_back(PieceName::WhiteKnight);
+	all_piece_names.emplace_back(PieceName::WhiteBishop);
+	all_piece_names.emplace_back(PieceName::WhiteRook);
+	all_piece_names.emplace_back(PieceName::WhiteQueen);
+	all_piece_names.emplace_back(PieceName::WhiteKing);
+	all_piece_names.emplace_back(PieceName::BlackPawn);
+	all_piece_names.emplace_back(PieceName::BlackKnight);
+	all_piece_names.emplace_back(PieceName::BlackBishop);
+	all_piece_names.emplace_back(PieceName::BlackRook);
+	all_piece_names.emplace_back(PieceName::BlackQueen);
+	all_piece_names.emplace_back(PieceName::BlackKing);
 }
 
 
 bool Board::load_FEN(std::string FEN)
 {
-	int rank = 0;
-	int file = 0;
 	char c;
 	std::string s;
 	std::stringstream ss(FEN);
@@ -36,12 +47,76 @@ bool Board::load_FEN(std::string FEN)
 	while (std::getline(ss, s, ' ')) {
 		fenSections.push_back(s);
 	}
-	//
 	// First Section: for string switch case for what piece it is and tracking
+	sort_fen_pieces_into_bitboards(fenSections[0]);
+	
+	// Second Section: Tracking who's turn is next
+	set_next_turn_from_fen(fenSections[1]);
 	//
-	s = fenSections[0];
-	for (int i = 0; i < s.size(); i++) {
-		c = s[i];
+	// Third Section: Castle
+	//
+	set_castle_rites_from_fen(fenSections[2]);
+
+	//
+	// Forth Section: En Passant
+	//
+
+	return true;
+}
+
+bool Board::set_castle_rites_from_fen(std::string fen_sec_3) {
+	for (int i = 0; i < fen_sec_3.size(); i++) {
+		char c = fen_sec_3[i];
+		switch (c) {
+		case 'K':
+			K_Castle = true;
+			break;
+		case 'Q':
+			Q_Castle = true;
+			break;
+		case 'k':
+			k_Castle = true;
+			break;
+		case 'q':
+			q_Castle = true;
+			break;
+		case '-':
+			K_Castle = false;
+			Q_Castle = false;
+			k_Castle = false;
+			q_Castle = false;
+			break;
+		default:
+			std::cout << "Error on Castle" << std::endl;
+			return false;
+			break;
+		}
+	}
+}
+
+bool Board::set_next_turn_from_fen(std::string fen_sec_2) {
+	
+	char c = fen_sec_2[0]; //get the first charicter from the string at id: 1
+	switch (c) {
+	case 'w':
+		side_to_move = PieceName::White;
+		break;
+	case 'b':
+		side_to_move = PieceName::Black;
+		break;
+	default:
+		std::cout << "Error in Side to move";
+		return false;
+		break;
+	}
+}
+
+bool Board::sort_fen_pieces_into_bitboards(std::string fen_sec_1) {
+	int rank = 0;
+	int file = 0;
+
+	for (int i = 0; i < fen_sec_1.size(); i++) {
+		char c = fen_sec_1[i];
 
 		//Dont Look at this Cancer
 		switch (c) {
@@ -111,68 +186,16 @@ bool Board::load_FEN(std::string FEN)
 			break;
 		}
 	}
-	//
-	// Second Section: Tracking who's turn is next
-	//
-	c = fenSections[1][0];
-	switch (c) {
-	case 'w':
-		side_to_move = nWhite;
-		break;
-	case 'b':
-		side_to_move = nBlack;
-		break;
-	default:
-		//std::cout << "Error in Side to move";
-		break;
-	}
-	//
-	// Third Section: Castle
-	//
-	s = fenSections[2];
-	for (int i = 0; i < s.size(); i++) {
-		c = s[i];
-		switch (c) {
-		case 'K':
-			K_Castle = true;
-			break;
-		case 'Q':
-			Q_Castle = true;
-			break;
-		case 'k':
-			k_Castle = true;
-			break;
-		case 'q':
-			q_Castle = true;
-			break;
-		case '-':
-			K_Castle = false;
-			Q_Castle = false;
-			k_Castle = false;
-			q_Castle = false;
-			break;
-		default:
-			//std::cout << "Error on Castle" << std::endl;
-			break;
-		}
-	}
-
-	//
-	// Forth Section: En Passant
-	//
-
-	return true;
 }
 
-
-int Board::return_piece_at(int loc) {
+PieceName Board::return_piece_at(int loc) const {
 
 	for (int bitboard = 0; bitboard <= 11; bitboard++) {
 		if (all_bitboards[bitboard]->test(loc)) {
-			return bitboard;
+			return all_piece_names[bitboard];
 		}
 	}
-	return enumPiece::nEmpty;
+	return PieceName::Empty;
 }
 
 
