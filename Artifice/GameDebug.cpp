@@ -1,7 +1,12 @@
 #include "GameDebug.h"
 
-GameDebug::GameDebug()
-{
+GameDebug::GameDebug() {
+
+	BoardManager board_manager = BoardManager();
+	print_opening_text();
+}
+
+void GameDebug::print_opening_text() const {
 	std::cout.setf(std::ios::unitbuf);// Make sure that the outputs are sent straight away to the GUI
 	std::cout << "Welcome to the Debug mode." << std::endl;
 	std::cout << "01 - 'new'  - Start new game" << std::endl;
@@ -12,19 +17,22 @@ GameDebug::GameDebug()
 void GameDebug::game_debug_loop() {
 	while (std::getline(std::cin, line)) {
 		if (line == "new") {
-			game_board.start_with_FEN();
+			board_manager.start_new_game();
 		}
 		else if (line == "quit") {
 			std::cout << "Bye Bye" << std::endl;
 			break;
 		}
-		print_board();
+		Board cb = board_manager.get_current_board();
+		print_board(cb);
 	}
 	
 }
 
+//There is a bug in here somewhere with the board getting copied into the printboard function
+
 //Function will print the current board state to the console for debug mode
-void GameDebug::print_board() const
+void GameDebug::print_board(Board board_to_print) const
 {
 	//Board Print stuff
 	std::string rank_separation = "    +---+---+---+---+---+---+---+---+";
@@ -41,7 +49,7 @@ void GameDebug::print_board() const
 			std::cout << "| ";
 
 			//get the piece number at this rank and file
-			PieceName p = game_board.return_piece_at(game_board.get_board_ID(rank, file));
+			PieceName p = board_to_print.return_piece_at(get_board_ID(rank, file));
 			//convert that piece number to a string to be displayed
 			std::cout << piece_to_string(p);
 			std::cout << " ";
@@ -109,5 +117,4 @@ std::string GameDebug::piece_to_string(PieceName p) const
 
 	}
 }
-
 

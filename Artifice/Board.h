@@ -6,7 +6,7 @@
 #include "cEnums.h"
 
 //Global Variables Because I need to. 
-static const std::string new_game_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
 
 class Board
 {
@@ -49,6 +49,9 @@ private:
     //[Return]: False if fails
     bool set_castle_rites_from_fen(std::string fen_sec_3);
 
+
+    //Fill the board vectors during class construction
+    void collect_bitboards();
 public:
     PieceName side_to_move = PieceName::White;
     bool K_Castle = false;
@@ -56,12 +59,18 @@ public:
     bool k_Castle = false;
     bool q_Castle = false;
 
+    //0-------------------------0//
+    //0     Constructors        0//
+    
+    //Will Create an empty board class
     Board();
+    //Will Create a board from a given fen string
+    Board(std::string FEN);
 
     // getAllBB will capture and return the current states of all bit boards
     std::vector<std::bitset<64>*>& get_all_bitboards() const;
 
-    void start_with_FEN(std::string FEN = new_game_FEN) {
+    void overwrite_board_from_FEN(std::string FEN) {
         load_FEN(FEN);
     }
 
@@ -72,6 +81,7 @@ public:
     
 
     PieceName return_piece_at(int loc) const;
+
 
     int get_board_ID(int r, int f) const {
         return r * 8 + f;

@@ -2,7 +2,7 @@
 #include<string>
 #include <iostream>
 #include <vector>
-#include "Board.h"
+#include "BoardManager.h"
 #include "cEnums.h"
 
 class GameDebug
@@ -10,7 +10,10 @@ class GameDebug
 
 private:
 	
-	Board game_board;
+	BoardManager board_manager;
+
+	//Call during class construction or debug startup, print directions
+	void print_opening_text() const;
 
 public:
 	std::string line; //string caught from the cli
@@ -25,11 +28,15 @@ public:
 	//Loop the debugger will run through to play a game via CLI
 	void game_debug_loop();
 	//Does what it says on the tin, prints current board state
-	void print_board() const;
+	void print_board(Board board_to_print) const;
 	//will take in a intager representing the piece
 	//will return the string representation of the piece or ' ' for none. 
 	std::string piece_to_string(PieceName p) const;
 
+
+	int get_board_ID(int r, int f) const {
+		return r * 8 + f;
+	}
 
 };
 

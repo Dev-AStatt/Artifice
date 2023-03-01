@@ -4,18 +4,27 @@
 
 
 Board::Board() {
-    all_bitboards.emplace_back(&whitePawns);
-    all_bitboards.emplace_back(&whiteKnights);
-    all_bitboards.emplace_back(&whiteBishops);
-    all_bitboards.emplace_back(&whiteRooks);
-    all_bitboards.emplace_back(&whiteQueens);
-    all_bitboards.emplace_back(&whiteKings);
-    all_bitboards.emplace_back(&blackPawns);
-    all_bitboards.emplace_back(&blackKnights);
-    all_bitboards.emplace_back(&blackBishops);
-    all_bitboards.emplace_back(&blackRooks);
-    all_bitboards.emplace_back(&blackQueens);
-    all_bitboards.emplace_back(&blackKings);
+	collect_bitboards();
+}
+
+Board::Board(std::string FEN) {
+	collect_bitboards();
+	overwrite_board_from_FEN(FEN);
+}
+
+void Board::collect_bitboards() {
+	all_bitboards.emplace_back(&whitePawns);
+	all_bitboards.emplace_back(&whiteKnights);
+	all_bitboards.emplace_back(&whiteBishops);
+	all_bitboards.emplace_back(&whiteRooks);
+	all_bitboards.emplace_back(&whiteQueens);
+	all_bitboards.emplace_back(&whiteKings);
+	all_bitboards.emplace_back(&blackPawns);
+	all_bitboards.emplace_back(&blackKnights);
+	all_bitboards.emplace_back(&blackBishops);
+	all_bitboards.emplace_back(&blackRooks);
+	all_bitboards.emplace_back(&blackQueens);
+	all_bitboards.emplace_back(&blackKings);
 
 	all_piece_names.emplace_back(PieceName::WhitePawn);
 	all_piece_names.emplace_back(PieceName::WhiteKnight);
@@ -31,10 +40,8 @@ Board::Board() {
 	all_piece_names.emplace_back(PieceName::BlackKing);
 }
 
-
 bool Board::load_FEN(std::string FEN)
 {
-	char c;
 	std::string s;
 	std::stringstream ss(FEN);
 	std::vector<std::string> fenSections;
