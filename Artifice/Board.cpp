@@ -4,41 +4,33 @@
 
 
 Board::Board() {
-	collect_bitboards();
+	create_bitboards();
 }
 
 Board::Board(std::string FEN) {
-	collect_bitboards();
+	create_bitboards();
 	overwrite_board_from_FEN(FEN);
 }
 
-void Board::collect_bitboards() {
-	all_bitboards.emplace_back(&whitePawns);
-	all_bitboards.emplace_back(&whiteKnights);
-	all_bitboards.emplace_back(&whiteBishops);
-	all_bitboards.emplace_back(&whiteRooks);
-	all_bitboards.emplace_back(&whiteQueens);
-	all_bitboards.emplace_back(&whiteKings);
-	all_bitboards.emplace_back(&blackPawns);
-	all_bitboards.emplace_back(&blackKnights);
-	all_bitboards.emplace_back(&blackBishops);
-	all_bitboards.emplace_back(&blackRooks);
-	all_bitboards.emplace_back(&blackQueens);
-	all_bitboards.emplace_back(&blackKings);
+void Board::create_bitboards() {
 
-	all_piece_names.emplace_back(PieceName::WhitePawn);
-	all_piece_names.emplace_back(PieceName::WhiteKnight);
-	all_piece_names.emplace_back(PieceName::WhiteBishop);
-	all_piece_names.emplace_back(PieceName::WhiteRook);
-	all_piece_names.emplace_back(PieceName::WhiteQueen);
-	all_piece_names.emplace_back(PieceName::WhiteKing);
-	all_piece_names.emplace_back(PieceName::BlackPawn);
-	all_piece_names.emplace_back(PieceName::BlackKnight);
-	all_piece_names.emplace_back(PieceName::BlackBishop);
-	all_piece_names.emplace_back(PieceName::BlackRook);
-	all_piece_names.emplace_back(PieceName::BlackQueen);
-	all_piece_names.emplace_back(PieceName::BlackKing);
+	all_bitboards = {
+		{ PieceName::WhitePawn	, 0},
+		{ PieceName::WhiteKnight, 0 },
+		{ PieceName::WhiteBishop, 0 },
+		{ PieceName::WhiteRook	, 0 },
+		{ PieceName::WhiteQueen	, 0 },
+		{ PieceName::WhiteKing	, 0 },
+		{ PieceName::BlackPawn	, 0 },
+		{ PieceName::BlackKnight, 0 },
+		{ PieceName::BlackBishop, 0 },
+		{ PieceName::BlackRook	, 0 },
+		{ PieceName::BlackQueen	, 0 },
+		{ PieceName::BlackKing	, 0 },
+	};
 }
+
+
 
 bool Board::load_FEN(std::string FEN)
 {
@@ -118,12 +110,38 @@ bool Board::set_next_turn_from_fen(std::string fen_sec_2) {
 	}
 }
 
+void Board::insert_piece_into_bb(PieceName p_name, int id) {
+	//This is a lamda function that can be used as a comparison for the find_if below
+	//it takes in the current bitboard that find is looking for. in the brackets is what you
+	//can pass in from the sorounding function. 
+	auto is_name = [p_name](const Bitboard& b) { return b.name == p_name; };
+	auto it = std::find_if(all_bitboards.begin(), all_bitboards.end(), is_name);
+	it->bb.set(id);
+}
+
+PieceName Board::return_piece_at(int board_id) const {
+
+	auto is_set = [board_id](const Bitboard& b) {return b.bb.test(board_id); };
+	
+	auto it = std::find_if(all_bitboards.begin(), all_bitboards.end(), is_set);
+	
+	if (it != std::end(all_bitboards)) {
+		return it->name;
+	} 
+	else {
+		return PieceName::Empty;
+	}	
+}
+
+
 bool Board::sort_fen_pieces_into_bitboards(std::string fen_sec_1) {
 	int rank = 0;
 	int file = 0;
 
 	for (int i = 0; i < fen_sec_1.size(); i++) {
 		char c = fen_sec_1[i];
+
+		int board_id = get_board_ID(file, rank);
 
 		//Dont Look at this Cancer
 		switch (c) {
@@ -135,53 +153,52 @@ bool Board::sort_fen_pieces_into_bitboards(std::string fen_sec_1) {
 			if (file > 7) { return false; }
 			break;
 		case 'r':
-			//// bset.set(pos) makes bset[pos] = 1
-			blackRooks.set(get_board_ID(file, rank));
+			insert_piece_into_bb(PieceName::BlackRook, board_id);
 			rank = ++rank;
 			break;
 		case 'n':
-			blackKnights.set(get_board_ID(file, rank));
+			insert_piece_into_bb(PieceName::BlackKnight, board_id);
 			rank = ++rank;
 			break;
 		case 'b':
-			blackBishops.set(get_board_ID(file, rank));
+			insert_piece_into_bb(PieceName::BlackBishop, board_id);
 			rank = ++rank;
 			break;
 		case 'q':
-			blackQueens.set(get_board_ID(file, rank));
+			insert_piece_into_bb(PieceName::BlackQueen, board_id);
 			rank = ++rank;
 			break;
 		case 'k':
-			blackKings.set(get_board_ID(file, rank));
+			insert_piece_into_bb(PieceName::BlackKnight, board_id);
 			rank = ++rank;
 			break;
 		case 'p':
-			blackPawns.set(get_board_ID(file, rank));
+			insert_piece_into_bb(PieceName::BlackPawn, board_id);
 			rank = ++rank;
 			break;
 			//WHITE_P PIECES
 		case 'R':
-			whiteRooks.set(get_board_ID(file, rank));
+			insert_piece_into_bb(PieceName::WhiteRook, board_id);
 			rank = ++rank;
 			break;
 		case 'N':
-			whiteKnights.set(get_board_ID(file, rank));
+			insert_piece_into_bb(PieceName::WhiteKnight, board_id);
 			rank = ++rank;
 			break;
 		case 'B':
-			whiteBishops.set(get_board_ID(file, rank));
+			insert_piece_into_bb(PieceName::WhiteBishop, board_id);
 			rank = ++rank;
 			break;
 		case 'Q':
-			whiteQueens.set(get_board_ID(file, rank));
+			insert_piece_into_bb(PieceName::WhiteQueen, board_id);
 			rank = ++rank;
 			break;
 		case 'K':
-			whiteKings.set(get_board_ID(file, rank));
+			insert_piece_into_bb(PieceName::WhiteKing, board_id);
 			rank = ++rank;
 			break;
 		case 'P':
-			whitePawns.set(get_board_ID(file, rank));
+			insert_piece_into_bb(PieceName::WhitePawn, board_id);
 			rank = ++rank;
 			break;
 
@@ -195,15 +212,7 @@ bool Board::sort_fen_pieces_into_bitboards(std::string fen_sec_1) {
 	}
 }
 
-PieceName Board::return_piece_at(int loc) const {
 
-	for (int bitboard = 0; bitboard <= 11; bitboard++) {
-		if (all_bitboards[bitboard]->test(loc)) {
-			return all_piece_names[bitboard];
-		}
-	}
-	return PieceName::Empty;
-}
 
 
 
