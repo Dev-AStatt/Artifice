@@ -15,6 +15,8 @@ private:
 	//Call during class construction or debug startup, print directions
 	void print_opening_text() const;
 
+	void print_help() const;
+
 public:
 	std::string line; //string caught from the cli
 	PieceName side_to_move = PieceName::White;

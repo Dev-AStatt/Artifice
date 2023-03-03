@@ -30,8 +30,6 @@ void Board::create_bitboards() {
 	};
 }
 
-
-
 bool Board::load_FEN(std::string FEN)
 {
 	std::string s;
@@ -114,15 +112,16 @@ void Board::insert_piece_into_bb(PieceName p_name, int id) {
 	//This is a lamda function that can be used as a comparison for the find_if below
 	//it takes in the current bitboard that find is looking for. in the brackets is what you
 	//can pass in from the sorounding function. 
-	auto is_name = [p_name](const Bitboard& b) { return b.name == p_name; };
+	auto is_name = [p_name](Bitboard& b) { return b.name == p_name; };
 	auto it = std::find_if(all_bitboards.begin(), all_bitboards.end(), is_name);
 	it->bb.set(id);
 }
 
 PieceName Board::return_piece_at(int board_id) const {
-
+	//This produces a weird error if the bitboard function is not const, so just keep
+	//an eye on that. 
 	auto is_set = [board_id](const Bitboard& b) {return b.bb.test(board_id); };
-	
+	//Find the bitboard that has the test position set at board_id
 	auto it = std::find_if(all_bitboards.begin(), all_bitboards.end(), is_set);
 	
 	if (it != std::end(all_bitboards)) {

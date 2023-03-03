@@ -11,6 +11,7 @@
 
 #include <string>
 #include "GameDebug.h"
+#include "Move.h"
 
 
 void introduction() {
@@ -25,6 +26,10 @@ void list_help_commands() {
 
 int main()
 {
+	//Just for testing please remove
+	Move m = Move("a1a2");
+
+
 	std::string gui_line; //to read the command given by the GUI
 	int flag = 1; //to change the value of chess squares from 'a' to 'h'
 

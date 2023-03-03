@@ -12,3 +12,9 @@ void BoardManager::start_new_game() {
 void BoardManager::start_new_game_FEN(std::string FEN) {
 	current_board = Board(FEN);
 }
+
+bool BoardManager::test_legal_move(Board& current_board, std::string move) const
+{
+
+	return false;
+}

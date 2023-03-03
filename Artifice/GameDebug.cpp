@@ -14,17 +14,35 @@ void GameDebug::print_opening_text() const {
 	std::cout << "03 - 'quit' - quit the debugger" << std::endl;
 }
 
+void GameDebug::print_help() const {
+	std::cout << "Options During Debug Mode:" << std::endl;
+	std::cout << "01 - 'test ' <move> - Will test if a move is legal" << std::endl;
+}
+
+
 void GameDebug::game_debug_loop() {
 	while (std::getline(std::cin, line)) {
+		bool draw_board = false;
 		if (line == "new") {
 			board_manager.start_new_game();
+			draw_board = true;
 		}
 		else if (line == "quit") {
 			std::cout << "Bye Bye" << std::endl;
 			break;
 		}
-		Board cb = board_manager.get_current_board();
-		print_board(cb);
+		else if (line == "help") {
+			print_help();
+		}
+		else if (line.substr(0, 5) == "test ") {
+			std::cout << line << std::endl;
+		}
+
+		if (draw_board) {
+			Board cb = board_manager.copy_current_board();
+			print_board(cb);
+		}
+
 	}
 	
 }
