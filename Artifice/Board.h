@@ -16,14 +16,18 @@ struct Bitboard {
 class Board
 {
 private:
-    //Vector that holds all Bitboards
-    std::vector<Bitboard> all_bitboards;
     
-    PieceName side_to_move = PieceName::White;
+    //Vector that holds bitboards of single pieces
+    std::vector<Bitboard> piece_bitboards;
+    std::vector<Bitboard> side_bitboards;
+    
+    PieceColor side_to_move = PieceColor::White;
     bool K_Castle = false;
     bool Q_Castle = false;
     bool k_Castle = false;
     bool q_Castle = false;
+
+    
 
     //Function will take in the first part of a fen string to be loaded
     //into a new board state. This is all of the charicters of the string up
@@ -47,6 +51,9 @@ private:
     bool load_FEN(std::string FEN);
     //Fill the board vectors during class construction
     void create_bitboards();
+    //call this after every change to a bitboard, to update the bitboards
+    //that are combinations of other bitboards like sides.
+    bool update_changes_to_mesh_boards(PieceName p_name, int board_id);
     //Simple multiplication function for repeted 2d to 1d conversion
     int get_board_ID(int rank, int file) const {return rank * 8 + file;}
 public:
@@ -56,12 +63,14 @@ public:
     Board(std::string FEN);
 
     //will return a copy of all the bitboards in Board
-    std::vector<Bitboard> get_copy_all_bitbords() const {return all_bitboards;};
+    std::vector<Bitboard> get_copy_all_bitbords() const {return piece_bitboards;};
+    PieceColor get_side_to_move() const { return side_to_move; }
 
-    PieceName return_piece_at(int loc) const;
-
-
-
+    PieceName get_piece_at(int loc) const;
+    //This will only return one or the other black or white bitboards, so dont pass
+    //in anything weird, or your just going to get hte black bitboard back. 
+    Bitboard get_copy_side_bitboard(PieceColor color) const;
+    
 
 };
 

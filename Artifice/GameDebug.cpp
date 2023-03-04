@@ -35,16 +35,21 @@ void GameDebug::game_debug_loop() {
 			print_help();
 		}
 		else if (line.substr(0, 5) == "test ") {
-			std::cout << line << std::endl;
+			std::cout << "Testing Move " + line.substr(5, 10) << std::endl;
+			if (board_manager.test_legal_move(board_manager.copy_current_board(), line.substr(5, 10))) {
+				std::cout << "Move: " + line.substr(5, 10) + " Is an Legal Move" << std::endl;
+			}
+			else {
+				std::cout << "Move: " + line.substr(5, 10) + "Is an Illegal Move" << std::endl;
+			}
+
 		}
 
 		if (draw_board) {
 			Board cb = board_manager.copy_current_board();
 			print_board(cb);
 		}
-
 	}
-	
 }
 
 //There is a bug in here somewhere with the board getting copied into the printboard function
@@ -67,7 +72,7 @@ void GameDebug::print_board(Board board_to_print) const
 			std::cout << "| ";
 
 			//get the piece number at this rank and file
-			PieceName p = board_to_print.return_piece_at(get_board_ID(rank, file));
+			PieceName p = board_to_print.get_piece_at(get_board_ID(rank, file));
 			//convert that piece number to a string to be displayed
 			std::cout << piece_to_string(p);
 			std::cout << " ";
@@ -80,7 +85,7 @@ void GameDebug::print_board(Board board_to_print) const
 
 	//Print game information
 	std::cout << "Turn: ";
-	if (side_to_move == PieceName::Black) { std::cout << "Black     "; }
+	if (side_to_move == PieceColor::Black) { std::cout << "Black     "; }
 	else { std::cout << "White     "; }
 	std::cout << "Castle: ";
 	if (white_king_castle ) { std::cout << 'K'; }

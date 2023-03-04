@@ -132,10 +132,6 @@
     <ClCompile Include="GameDebug.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Move.cpp" />
-    <ClCompile Include="Test.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\engine-interface.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
@@ -143,6 +139,12 @@
     <ClInclude Include="cEnums.h" />
     <ClInclude Include="GameDebug.h" />
     <ClInclude Include="Move.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\External_Resources\Board_Excel.xlsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\External_Resources\engine-interface.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

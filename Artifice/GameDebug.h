@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "BoardManager.h"
-#include "cEnums.h"
+
 
 class GameDebug
 {
@@ -19,7 +19,7 @@ private:
 
 public:
 	std::string line; //string caught from the cli
-	PieceName side_to_move = PieceName::White;
+	PieceColor side_to_move = PieceColor::White;
 	bool white_king_castle = false;
 	bool white_queen_castle = false;
 	bool black_king_castle = false;

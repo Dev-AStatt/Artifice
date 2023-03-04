@@ -14,7 +14,7 @@ Board::Board(std::string FEN) {
 
 void Board::create_bitboards() {
 
-	all_bitboards = {
+	piece_bitboards = {
 		{ PieceName::WhitePawn	, 0},
 		{ PieceName::WhiteKnight, 0 },
 		{ PieceName::WhiteBishop, 0 },
@@ -28,7 +28,17 @@ void Board::create_bitboards() {
 		{ PieceName::BlackQueen	, 0 },
 		{ PieceName::BlackKing	, 0 },
 	};
+
+	side_bitboards = {
+		//if you mess with this order be ready to clean it up.
+		//some things are hardcoded into the vector id. 
+		{ PieceName::AllWhite, 0},
+		{ PieceName::AllBlack, 0}
+	};
 }
+
+
+
 
 bool Board::load_FEN(std::string FEN)
 {
@@ -89,6 +99,7 @@ bool Board::set_castle_rites_from_fen(std::string fen_sec_3) {
 			break;
 		}
 	}
+	return true;
 }
 
 bool Board::set_next_turn_from_fen(std::string fen_sec_2) {
@@ -96,16 +107,17 @@ bool Board::set_next_turn_from_fen(std::string fen_sec_2) {
 	char c = fen_sec_2[0]; //get the first charicter from the string at id: 1
 	switch (c) {
 	case 'w':
-		side_to_move = PieceName::White;
+		side_to_move = PieceColor::White;
 		break;
 	case 'b':
-		side_to_move = PieceName::Black;
+		side_to_move = PieceColor::Black;
 		break;
 	default:
 		std::cout << "Error in Side to move";
 		return false;
 		break;
 	}
+	return true;
 }
 
 void Board::insert_piece_into_bb(PieceName p_name, int id) {
@@ -113,18 +125,54 @@ void Board::insert_piece_into_bb(PieceName p_name, int id) {
 	//it takes in the current bitboard that find is looking for. in the brackets is what you
 	//can pass in from the sorounding function. 
 	auto is_name = [p_name](Bitboard& b) { return b.name == p_name; };
-	auto it = std::find_if(all_bitboards.begin(), all_bitboards.end(), is_name);
-	it->bb.set(id);
+	auto it = std::find_if(piece_bitboards.begin(), piece_bitboards.end(), is_name);
+	
+	if (it != std::end(piece_bitboards)) {
+		//set the piece_bitboard
+		it->bb.set(id);
+		//Set the multi-bitboards
+		update_changes_to_mesh_boards(p_name, id);
+	}
+
 }
 
-PieceName Board::return_piece_at(int board_id) const {
+Bitboard Board::get_copy_side_bitboard(PieceColor color) const {
+	if (color == PieceColor::White) { return side_bitboards[0]; }
+	else { return side_bitboards[1]; }
+}
+
+
+bool Board::update_changes_to_mesh_boards(PieceName p_name, int board_id) {
+	Enum_Utils enum_utils;
+	PieceColor color = enum_utils.get_color_from_name(p_name);
+
+	//test to make sure no pieces are already there.
+	for (auto& b_board : side_bitboards) {
+		if (b_board.bb.test(board_id)) { return false; }
+	}
+	//set Pieces
+	if (color == PieceColor::White) {
+		side_bitboards[0].bb.set(board_id);
+		return true;
+	}
+	if (color == PieceColor::Black) {
+		side_bitboards[1].bb.set(board_id);
+		return true;
+	}
+	//if Piece Color isnt black or white for some reason
+	else { return false; }
+
+
+}
+
+PieceName Board::get_piece_at(int board_id) const {
 	//This produces a weird error if the bitboard function is not const, so just keep
 	//an eye on that. 
 	auto is_set = [board_id](const Bitboard& b) {return b.bb.test(board_id); };
 	//Find the bitboard that has the test position set at board_id
-	auto it = std::find_if(all_bitboards.begin(), all_bitboards.end(), is_set);
+	auto it = std::find_if(piece_bitboards.begin(), piece_bitboards.end(), is_set);
 	
-	if (it != std::end(all_bitboards)) {
+	if (it != std::end(piece_bitboards)) {
 		return it->name;
 	} 
 	else {
@@ -142,7 +190,6 @@ bool Board::sort_fen_pieces_into_bitboards(std::string fen_sec_1) {
 
 		int board_id = get_board_ID(file, rank);
 
-		//Dont Look at this Cancer
 		switch (c) {
 		case ' ':
 			break;
@@ -209,6 +256,7 @@ bool Board::sort_fen_pieces_into_bitboards(std::string fen_sec_1) {
 			break;
 		}
 	}
+	return true;
 }
 
 
