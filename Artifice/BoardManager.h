@@ -10,12 +10,19 @@ private:
 	const std::string new_game_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 	Board current_board;
+	Enum_Utils enum_utils;
 	
 	// 0----------------------------0
 	// |	Legal Move Generation	|
 	// 0----------------------------0
 	bool test_legal_move_player_turn(Board test_board, Move move) const;
-	std::vector<Move> get_legal_moves(Board test_board, PieceName piece_name, int starting_ID) const;
+	std::vector<Move> get_legal_moves       (Board test_board, PieceName piece_name, int starting_ID) const;
+	std::vector<Move> get_legal_moves_bishop(Board test_board, PieceName piece_name, int starting_ID) const;
+	std::vector<Move> get_legal_moves_rook  (Board test_board, PieceName piece_name, int starting_ID) const;
+	std::vector<Move> get_legal_moves_knight(Board test_board, PieceName piece_name, int starting_ID) const;
+	std::vector<Move> get_legal_moves_pawn  (Board test_board, PieceName piece_name, int starting_ID) const;
+	std::vector<Move> get_legal_moves_queen (Board test_board, PieceName piece_name, int starting_ID) const;
+	std::vector<Move> get_legal_moves_king  (Board test_board, PieceName piece_name, int starting_ID) const;
 
 
 

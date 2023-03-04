@@ -27,6 +27,17 @@ enum class PieceColor
     Black
 };
 
+enum class PieceType
+{
+    Pawn,
+    Knight,
+    Bishop,
+    Rook,
+    Queen,
+    King,
+    None,
+};
+
 
 class Enum_Utils {
 private:
@@ -51,7 +62,7 @@ public:
     Enum_Utils() {}
 
     PieceColor get_color_from_name(PieceName name) const {
-        if (name == PieceName::Empty) { throw std::invalid_argument("Recieved PieceName::Empty in get_color_from_name()"); }
+        if (name == PieceName::Empty   ) { throw std::invalid_argument("Recieved PieceName::Empty in get_color_from_name()"); }
         if (name == PieceName::AllWhite) { return PieceColor::White; }
         if (name == PieceName::AllBlack) { return PieceColor::Black; }
 
@@ -60,7 +71,16 @@ public:
             return PieceColor::White;
         }
         else { return PieceColor::Black; }
+    }
 
+    PieceType get_type_from_name(PieceName name) const {
+        if (name == PieceName::WhitePawn   || name == PieceName::BlackPawn  ) { return PieceType::Pawn;   }
+        if (name == PieceName::WhiteKnight || name == PieceName::BlackKnight) { return PieceType::Knight; }
+        if (name == PieceName::WhiteBishop || name == PieceName::BlackBishop) { return PieceType::Bishop; }
+        if (name == PieceName::WhiteRook   || name == PieceName::BlackRook  ) { return PieceType::Rook;   }
+        if (name == PieceName::WhiteQueen  || name == PieceName::BlackQueen ) { return PieceType::Queen;  }
+        if (name == PieceName::WhiteKing   || name == PieceName::BlackKing  ) { return PieceType::King;   }
+        else { return PieceType::None; }
     }
 
 };
