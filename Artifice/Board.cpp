@@ -166,7 +166,10 @@ bool Board::update_changes_to_mesh_boards(PieceName p_name, int board_id) {
 	//if Piece Color isnt black or white for some reason
 	else { return false; }
 
+}
 
+PieceName Board::get_piece_at(BoardPos pos) const {
+	return get_piece_at(pos.get_board_ID());
 }
 
 PieceName Board::get_piece_at(int board_id) const {
