@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="Board.h" />
     <ClInclude Include="BoardManager.h" />
+    <ClInclude Include="BoardPos.h" />
     <ClInclude Include="cEnums.h" />
     <ClInclude Include="GameDebug.h" />
     <ClInclude Include="Move.h" />

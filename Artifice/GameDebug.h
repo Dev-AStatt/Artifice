@@ -19,11 +19,6 @@ private:
 
 public:
 	std::string line; //string caught from the cli
-	PieceColor side_to_move = PieceColor::White;
-	bool white_king_castle = false;
-	bool white_queen_castle = false;
-	bool black_king_castle = false;
-	bool black_queen_castle = false;
 
 	//Constructor
 	GameDebug();

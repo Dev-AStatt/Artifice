@@ -3,6 +3,7 @@
 
 #include "../Artifice/Move.cpp"
 #include "../Artifice/cEnums.h"
+#include "../Artifice/BoardPos.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -10,18 +11,15 @@ namespace ArtificeUnitTests
 {
 	TEST_CLASS(MoveClass) {
 	public:
-		
 		TEST_METHOD(TestThatTestsWork) {Assert::AreEqual(1, 1);}
-
-
 		TEST_METHOD(String_To_Board_ID) {
 			Move m_1 = Move("a1a1");
 			Move m_2 = Move("h8h8");
 			
-			Assert::AreEqual(56, m_1.get_starting_board_ID());
-			Assert::AreEqual(56, m_1.get_ending_board_ID());
-			Assert::AreEqual(7, m_2.get_starting_board_ID());
-			Assert::AreEqual(7, m_2.get_ending_board_ID());
+			Assert::AreEqual(56, m_1.get_starting().get_board_ID());
+			Assert::AreEqual(56, m_1.get_ending().get_board_ID());
+			Assert::AreEqual(7, m_2.get_starting().get_board_ID());
+			Assert::AreEqual(7, m_2.get_ending().get_board_ID());
 		}
 	};
 
@@ -40,6 +38,34 @@ namespace ArtificeUnitTests
 			Assert::IsTrue(pc_4 == PieceColor::Black);
 			
 		}
+	};
+	TEST_CLASS(Board_Pos_Class) {
+	public:
+		TEST_METHOD(Constructor_Baord_ID) {
+			BoardPos bp_1 = BoardPos(33); //b4 - file: 1 rank: 3
+			BoardPos bp_2 = BoardPos(7); //b4 - file: 1 rank: 3
+			
+			Assert::AreEqual(1, bp_1.get_file());
+			Assert::AreEqual(4, bp_1.get_rank());
+			Assert::AreEqual(33, bp_1.get_board_ID(4, 1));
+
+			Assert::AreEqual(7, bp_2.get_file());
+			Assert::AreEqual(0, bp_2.get_rank());
+			Assert::AreEqual(7, bp_2.get_board_ID(0, 7));
+		}
+		TEST_METHOD(Constructor_String_Correct_Input) {
+			//Test Correct Input
+			BoardPos bp_1 = BoardPos("a1");
+			Assert::AreEqual(56, bp_1.get_board_ID());
+			Assert::AreEqual(7, bp_1.get_rank());
+			Assert::AreEqual(0, bp_1.get_file());
+		}
+		TEST_METHOD(Constructor_String_Invalid_Input) {
+			auto func = [] { BoardPos("ww"); };
+			Assert::ExpectException<std::invalid_argument>(func);
+		}
+		
+
 	};
 }
 

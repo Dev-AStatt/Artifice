@@ -1,6 +1,7 @@
 #include "BoardManager.h"
 
 
+
 BoardManager::BoardManager() {
 
 }
@@ -12,6 +13,14 @@ void BoardManager::start_new_game() {
 void BoardManager::start_new_game_FEN(std::string FEN) {
 	current_board = Board(FEN);
 }
+
+
+
+// 0----------------------------0
+// |	Legal Move Generation	|
+// 0----------------------------0
+
+
 
 bool BoardManager::test_legal_move(Board test_board, std::string move) const
 {
@@ -27,8 +36,8 @@ bool BoardManager::test_legal_move(Board test_board, std::string move) const
 	if (!test_legal_move_player_turn(test_board, test_move)) { return false; }
 
 	// Step 02
-	PieceName piece_name = test_board.get_piece_at(test_move.get_starting_board_ID());
-	std::vector<Move> legal_moves = get_legal_moves(test_board, piece_name, test_move.get_starting_board_ID());
+	PieceName piece_name = test_board.get_piece_at(test_move.get_starting().get_board_ID());
+	std::vector<Move> legal_moves = get_legal_moves(test_board, piece_name, test_move.get_starting().get_board_ID());
 
 	return true;
 }
@@ -39,7 +48,7 @@ bool BoardManager::test_legal_move_player_turn(Board test_board, Move move_to_te
 	//get who's turn it is 
 	PieceColor whos_turn = current_board.get_side_to_move();
 	Bitboard color_side = current_board.get_copy_side_bitboard(whos_turn);
-	return color_side.bb.test(move_to_test.get_starting_board_ID());
+	return color_side.bb.test(move_to_test.get_starting().get_board_ID());
 
 }
 
@@ -47,6 +56,8 @@ std::vector<Move> BoardManager::get_legal_moves(Board test_board, PieceName piec
 {
 	std::vector<Move> legal_moves;
 	PieceType piece_type = enum_utils.get_type_from_name(piece_name);
+
+	/*
 	if (piece_type == PieceType::Pawn) {
 		legal_moves = get_legal_moves_pawn(test_board, piece_name, starting_ID);
 	}
@@ -65,10 +76,12 @@ std::vector<Move> BoardManager::get_legal_moves(Board test_board, PieceName piec
 	if (piece_type == PieceType::King) {
 		legal_moves = get_legal_moves_king(test_board, piece_name, starting_ID);
 	}
+	*/
 	
 	return legal_moves;
 }
 
+/*
 std::vector<Move> BoardManager::get_legal_moves_bishop(Board test_board, PieceName piece_name, int starting_ID) const
 {
 	return std::vector<Move>();
@@ -102,7 +115,7 @@ std::vector<Move> BoardManager::get_legal_moves_king(Board test_board, PieceName
 	return std::vector<Move>();
 }
 
-
+*/
 
 
 

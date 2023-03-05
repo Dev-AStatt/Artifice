@@ -65,6 +65,11 @@ public:
     //will return a copy of all the bitboards in Board
     std::vector<Bitboard> get_copy_all_bitbords() const {return piece_bitboards;};
     PieceColor get_side_to_move() const { return side_to_move; }
+    bool can_white_castle_kingside() const { return K_Castle; }
+    bool can_white_castle_queenside() const { return Q_Castle; }
+    bool can_black_castle_kingside() const { return k_Castle; }
+    bool can_black_castle_queenside() const { return q_Castle; }
+    void flip_side_to_move();
 
     PieceName get_piece_at(int loc) const;
     //This will only return one or the other black or white bitboards, so dont pass

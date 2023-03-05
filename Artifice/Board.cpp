@@ -37,6 +37,10 @@ void Board::create_bitboards() {
 	};
 }
 
+void Board::flip_side_to_move() {
+	if (side_to_move == PieceColor::White) { side_to_move = PieceColor::Black; }
+	else if (side_to_move == PieceColor::Black) { side_to_move = PieceColor::White; }
+}
 
 
 

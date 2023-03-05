@@ -32,35 +32,18 @@ bool Move::move_sanitization(std::string standard_notation) const {
 }
 
 void Move::non_event_move(std::string standard_notation) {
-	starting_board_ID = string_coordinate_to_board_ID(standard_notation.substr(0, 2));
-	ending_board_ID = string_coordinate_to_board_ID(standard_notation.substr(2, 4));
+	starting = BoardPos(standard_notation.substr(0, 2));
+	ending = BoardPos(standard_notation.substr(2, 4));
 }
 
 void Move::event_move(std::string standard_notation) {
-
+	starting = BoardPos(standard_notation.substr(0, 2));
+	ending = BoardPos(standard_notation.substr(3, 5));
 }
 
-//Simple multiplication function for repeted 2d to 1d conversion
-int get_board_ID(int rank, int file) { return rank * 8 + file; }
 
-int Move::string_coordinate_to_board_ID(std::string single_coord) const {
-	int file = 0; // Letters a, b, c, d, e, f, g, h
-	int rank = 0; // Numbers 1, 2, 3, 4, 5, 6, 7, 8
-	
-	char c = single_coord[0];
-	if (0 <= int(c) - 97 <= 7) {
-		file = int(c) - 97; 
-	} //int(char) will get us the intager value of the letter, then subtract 97 to get the number
-	else { std::cout << "First char from string read incorrectly" + c << std::endl; }
 
-	c = single_coord[1];
-	if (c >= 49 && c <= 56) {
-		rank = 8 - std::atoi(&c); 
-	}
-	else { std::cout << "Second char from string read incorrectly" + c << std::endl; }
 
-	return get_board_ID(rank, file);
 
-}
 
 

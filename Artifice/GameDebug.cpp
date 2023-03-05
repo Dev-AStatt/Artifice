@@ -17,6 +17,7 @@ void GameDebug::print_opening_text() const {
 void GameDebug::print_help() const {
 	std::cout << "Options During Debug Mode:" << std::endl;
 	std::cout << "01 - 'test ' <move> - Will test if a move is legal" << std::endl;
+	std::cout << "02 - 'flip turn' - will flip who's turn it is" << std::endl;
 }
 
 
@@ -34,13 +35,18 @@ void GameDebug::game_debug_loop() {
 		else if (line == "help") {
 			print_help();
 		}
+		else if (line == "flip turn") {
+			board_manager.flip_turn_current_board();
+			draw_board = true;
+		}
+
 		else if (line.substr(0, 5) == "test ") {
 			std::cout << "Testing Move " + line.substr(5, 10) << std::endl;
 			if (board_manager.test_legal_move(board_manager.copy_current_board(), line.substr(5, 10))) {
 				std::cout << "Move: " + line.substr(5, 10) + " Is an Legal Move" << std::endl;
 			}
 			else {
-				std::cout << "Move: " + line.substr(5, 10) + "Is an Illegal Move" << std::endl;
+				std::cout << "Move: " + line.substr(5, 10) + " Is an Illegal Move" << std::endl;
 			}
 
 		}
@@ -85,13 +91,13 @@ void GameDebug::print_board(Board board_to_print) const
 
 	//Print game information
 	std::cout << "Turn: ";
-	if (side_to_move == PieceColor::Black) { std::cout << "Black     "; }
+	if (board_to_print.get_side_to_move() == PieceColor::Black) { std::cout << "Black     "; }
 	else { std::cout << "White     "; }
 	std::cout << "Castle: ";
-	if (white_king_castle ) { std::cout << 'K'; }
-	if (white_queen_castle) { std::cout << 'Q'; }
-	if (black_king_castle ) { std::cout << 'k'; }
-	if (black_queen_castle) { std::cout << 'q'; }
+	if (board_to_print.can_white_castle_kingside() ) { std::cout << 'K'; }
+	if (board_to_print.can_white_castle_queenside() ) { std::cout << 'Q'; }
+	if (board_to_print.can_black_castle_kingside() ) { std::cout << 'k'; }
+	if (board_to_print.can_black_castle_queenside()) { std::cout << 'q'; }
 	std::cout << std::endl;
 
 }
