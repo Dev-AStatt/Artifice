@@ -130,6 +130,7 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="BoardManager.cpp" />
     <ClCompile Include="GameDebug.cpp" />
+    <ClCompile Include="LegalMovesGenerator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Move.cpp" />
   </ItemGroup>
@@ -139,6 +140,7 @@
     <ClInclude Include="BoardPos.h" />
     <ClInclude Include="cEnums.h" />
     <ClInclude Include="GameDebug.h" />
+    <ClInclude Include="LegalMovesGenerator.h" />
     <ClInclude Include="Move.h" />
   </ItemGroup>
   <ItemGroup>
