@@ -20,10 +20,14 @@ Move::Move(std::string standard_notation) : standard_notation(standard_notation)
 	if (standard_notation.length() == 5) {
 		event_move(standard_notation);
 	}
-
-
-
 }
+
+Move::Move(BoardPos starting, BoardPos ending, MoveType type) : starting(starting), ending(ending), type(type) {}
+
+
+
+
+
 
 bool Move::move_sanitization(std::string standard_notation) const {
 	if (standard_notation.length() > 5) { return false; }
@@ -34,11 +38,13 @@ bool Move::move_sanitization(std::string standard_notation) const {
 void Move::non_event_move(std::string standard_notation) {
 	starting = BoardPos(standard_notation.substr(0, 2));
 	ending = BoardPos(standard_notation.substr(2, 4));
+	type = MoveType::Normal;
 }
 
 void Move::event_move(std::string standard_notation) {
 	starting = BoardPos(standard_notation.substr(0, 2));
 	ending = BoardPos(standard_notation.substr(3, 5));
+	type = MoveType::Capture;
 }
 
 
