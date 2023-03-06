@@ -40,7 +40,7 @@ bool LegalMovesGenerator::test_legal_move(Board test_board, std::string move) co
 
 	Move test_move = Move(move);
 	// Step 01
-	if (!test_legal_move_player_turn(test_board, test_move)) { return false; }
+	if (!is_move_right_player(test_board, test_move)) { return false; }
 
 	// Step 02
 	PieceName piece_name = test_board.get_piece_at(test_move.get_starting());
@@ -50,7 +50,7 @@ bool LegalMovesGenerator::test_legal_move(Board test_board, std::string move) co
 }
 
 
-bool LegalMovesGenerator::test_legal_move_player_turn(Board test_board, Move move_to_test) const {
+bool LegalMovesGenerator::is_move_right_player(Board test_board, Move move_to_test) const {
 
 	//get who's turn it is 
 	PieceColor whos_turn = test_board.get_side_to_move();
@@ -66,22 +66,22 @@ std::vector<Move> LegalMovesGenerator::get_legal_moves(Board test_board, PieceNa
 
 
 	if (piece_type == PieceType::Rook) {
-		legal_moves = get_legal_moves_rook(test_board, piece_name, pos);
+		legal_moves = get_moves_rook(test_board, piece_name, pos);
 	}
 
 
 	return legal_moves;
 }
 
-std::vector<Move> LegalMovesGenerator::get_legal_moves_rook(Board test_board, PieceName piece_name, BoardPos pos) const
+std::vector<Move> LegalMovesGenerator::get_moves_rook(Board test_board, PieceName piece_name, BoardPos pos) const
 {
 	//Rooks can move + or - rank, or + or - file until a piece can be captured. No jumping
-	std::vector<Move> legal_moves = get_legal_moves_across_file(test_board, piece_name, pos);
-	std::vector<Move> legal_moves_1 = get_legal_moves_across_rank(test_board, piece_name, pos);
+	std::vector<Move> legal_moves = get_moves_across_file(test_board, piece_name, pos);
+	std::vector<Move> legal_moves_1 = get_moves_across_rank(test_board, piece_name, pos);
 	return add_moves_together(legal_moves, legal_moves_1);
 }
 
-std::vector<Move> LegalMovesGenerator::get_legal_moves_across_file(Board test_board, PieceName piece_name, BoardPos pos) const
+std::vector<Move> LegalMovesGenerator::get_moves_across_file(Board test_board, PieceName piece_name, BoardPos pos) const
 {
 	std::vector<Move> legal_moves;
 	
@@ -92,7 +92,7 @@ std::vector<Move> LegalMovesGenerator::get_legal_moves_across_file(Board test_bo
 		BoardPos test_pos = BoardPos(pos.get_rank(), file);
 		PieceName test_name = test_board.get_piece_at(test_pos);
 		//for each loop, check if the next position is a move or not
-		Return_For_Move_Validation ret_val = if_legal_move_get_move(pos,test_pos,piece_name,test_name);
+		Return_For_Move_Validation ret_val = if_endpoint_legal_get_move(pos,test_pos,piece_name,test_name);
 		if (ret_val.usable_move) { 
 			//test the out paramaters of ret_val
 			legal_moves.emplace_back(ret_val.returned_move);
@@ -106,7 +106,7 @@ std::vector<Move> LegalMovesGenerator::get_legal_moves_across_file(Board test_bo
 		BoardPos test_pos = BoardPos(pos.get_rank(), file);
 		PieceName test_name = test_board.get_piece_at(test_pos);
 		//for each loop, check if the next position is a move or not
-		Return_For_Move_Validation ret_val = if_legal_move_get_move(pos, test_pos, piece_name, test_name);
+		Return_For_Move_Validation ret_val = if_endpoint_legal_get_move(pos, test_pos, piece_name, test_name);
 		if (ret_val.usable_move) {
 			//test the out paramaters of ret_val
 			legal_moves.emplace_back(ret_val.returned_move);
@@ -117,18 +117,18 @@ std::vector<Move> LegalMovesGenerator::get_legal_moves_across_file(Board test_bo
 	return legal_moves;
 }
 
-std::vector<Move> LegalMovesGenerator::get_legal_moves_across_rank(Board test_board, PieceName piece_name, BoardPos pos) const
+std::vector<Move> LegalMovesGenerator::get_moves_across_rank(Board test_board, PieceName piece_name, BoardPos pos) const
 {
 	std::vector<Move> legal_moves;
 
-	//Down
+	//Searching Down
 	int rank = pos.get_rank();
 	
 	for (rank += 1; rank <= 7; rank++) {
 		BoardPos test_pos = BoardPos(rank, pos.get_file());
 		PieceName test_name = test_board.get_piece_at(test_pos);
 		//for each loop, check if the next position is a move or not
-		Return_For_Move_Validation ret_val = if_legal_move_get_move(pos, test_pos, piece_name, test_name);
+		Return_For_Move_Validation ret_val = if_endpoint_legal_get_move(pos, test_pos, piece_name, test_name);
 		if (ret_val.usable_move) {
 			//test the out paramaters of ret_val
 			legal_moves.emplace_back(ret_val.returned_move);
@@ -136,12 +136,14 @@ std::vector<Move> LegalMovesGenerator::get_legal_moves_across_rank(Board test_bo
 		}
 		else { break; } //if move unusable - break from the loop
 	}
+	//Searching Up
 	rank = pos.get_rank();
+
 	for (rank -= 1; rank >= 0; rank--) {
 		BoardPos test_pos = BoardPos(rank, pos.get_file());
 		PieceName test_name = test_board.get_piece_at(test_pos);
 		//for each loop, check if the next position is a move or not
-		Return_For_Move_Validation ret_val = if_legal_move_get_move(pos, test_pos, piece_name, test_name);
+		Return_For_Move_Validation ret_val = if_endpoint_legal_get_move(pos, test_pos, piece_name, test_name);
 		if (ret_val.usable_move) {
 			//test the out paramaters of ret_val
 			legal_moves.emplace_back(ret_val.returned_move);
@@ -149,32 +151,34 @@ std::vector<Move> LegalMovesGenerator::get_legal_moves_across_rank(Board test_bo
 		}
 		else { break; } //if move unusable - break from the loop
 	}
-
-
-	
 	return legal_moves;
 }
 
-Return_For_Move_Validation LegalMovesGenerator::if_legal_move_get_move(
+Return_For_Move_Validation LegalMovesGenerator::if_endpoint_legal_get_move(
 	BoardPos source_pos, 
 	BoardPos test_pos, 
 	PieceName source_name, 
 	PieceName test_name
 ) const {
 	
+	//here are all the default flags to be made into a move later
 	MoveType type = MoveType::Normal;
 	bool useable_data = false;
 	bool continue_searching_after = true;
+
+
 	if (test_name == PieceName::Empty) {
 		//if location is empty add it to the list of legal moves
 		useable_data = true;
 		continue_searching_after = true;
 	}
+
 	else if (enum_utils.is_piece_same_team(source_name, test_name)) {
 		//if on the same team, break
 		useable_data = false;
 		continue_searching_after = false;
 	}
+
 	else if (!enum_utils.is_piece_same_team(source_name, test_name)) {
 		//if not on the same team
 		//check for special cases, like if the opponent piece is a king, or an Enpassant
@@ -199,6 +203,8 @@ Return_For_Move_Validation LegalMovesGenerator::if_legal_move_get_move(
 		throw std::invalid_argument("we fell out of a if else that we shouldn't have");
 		useable_data = false;
 	}
+
+	//Create a move of type that may have been changed in the if checks
 	Move m = Move(source_pos, test_pos, type);
 	return Return_For_Move_Validation{ useable_data, continue_searching_after, m };
 }
@@ -208,18 +214,6 @@ std::vector<Move> LegalMovesGenerator::add_moves_together(std::vector<Move> m1, 
 	std::vector<Move> ret_vect = m1;
 	std::copy(m2.begin(), m2.end(), std::back_inserter(ret_vect));
 	return ret_vect;
-
 }
 
 
-/*
-
-std::vector<Move> BoardManager::get_legal_moves_queen(Board test_board, PieceName piece_name, int starting_ID) const
-{
-	std::vector<Move> legal_moves = get_legal_moves_bishop(test_board, piece_name, starting_ID);
-	std::vector<Move> legal_moves_1 = get_legal_moves_rook(test_board, piece_name, starting_ID);
-	legal_moves.insert(legal_moves.end(), legal_moves_1.begin(), legal_moves_1.end());
-	return legal_moves;
-}
-
-*/

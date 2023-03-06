@@ -87,7 +87,7 @@ namespace ArtificeUnitTests
 		
 
 	};
-	TEST_CLASS(MoveLawer) {
+	TEST_CLASS(MoveLawyer) {
 	public:
 		TEST_METHOD(LM_across_file) {
 			std::string loaded_fen = "rnbqkbnr/ppp1pppp/8/8/3N4/8/B1p1R2P/1NBQK1NR w Kkq - 0 1";
