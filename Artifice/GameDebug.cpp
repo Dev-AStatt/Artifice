@@ -28,6 +28,10 @@ void GameDebug::game_debug_loop() {
 			board_manager.start_new_game();
 			draw_board = true;
 		}
+		if (line == "fen") {
+			board_manager.start_new_game_FEN("rnbqkbnr/ppp1pppp/8/8/3N4/8/B1p1R2P/1NBQK1NR w Kkq - 0 1");
+			draw_board = true;
+		}
 		else if (line == "quit") {
 			std::cout << "Bye Bye" << std::endl;
 			break;
