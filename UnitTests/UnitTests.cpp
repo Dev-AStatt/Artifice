@@ -1,9 +1,13 @@
+#pragma once
 #include "pch.h"
 #include "CppUnitTest.h"
 
 #include "../Artifice/Move.cpp"
-#include "../Artifice/cEnums.h"
-#include "../Artifice/BoardPos.h"
+#include "../Artifice/Board.cpp"
+#include "../Artifice/LegalMovesGenerator.cpp"
+
+
+
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -21,6 +25,22 @@ namespace ArtificeUnitTests
 			Assert::AreEqual(7, m_2.get_starting().get_board_ID());
 			Assert::AreEqual(7, m_2.get_ending().get_board_ID());
 		}
+		TEST_METHOD(CopyVectors) {
+			std::vector<Move> m_1 = {
+				Move("a1a2"),
+				Move("a3a4")
+			};
+			std::vector<Move> m_2 = {
+				Move("b1b2"),
+				Move("b3b4")
+			};
+			Assert::AreEqual(4, int(m_1.size() + m_2.size()));
+			
+			std::copy(m_2.begin(), m_2.end(), std::back_inserter(m_1));
+
+			Assert::AreEqual(4, int(m_1.size()));
+		}
+
 	};
 
 	TEST_CLASS(Enums_Class) {
@@ -67,6 +87,20 @@ namespace ArtificeUnitTests
 		
 
 	};
+	TEST_CLASS(MoveLawer) {
+	public:
+		TEST_METHOD(LM_across_file) {
+			std::string loaded_fen = "rnbqkbnr/ppp1pppp/8/8/3N4/8/B1p1R2P/1NBQK1NR w Kkq - 0 1";
+			Board b = Board(loaded_fen);
+			LegalMovesGenerator lgm;
+			std::vector<Move> test_moves = lgm.get_legal_moves(b, PieceName::WhiteRook, BoardPos("e2"));
+
+			Assert::AreEqual(9, int(test_moves.size()));
+			test_moves = lgm.get_legal_moves(b, PieceName::WhiteRook, BoardPos("h1"));
+			Assert::AreEqual(0, int(test_moves.size()));
+		}
+	};
+	
 }
 
 
