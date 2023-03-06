@@ -82,6 +82,16 @@ public:
         if (name == PieceName::WhiteKing   || name == PieceName::BlackKing  ) { return PieceType::King;   }
         else { return PieceType::None; }
     }
+    bool is_piece_same_team(PieceName name_1, PieceName name_2) const {
+        if (get_color_from_name(name_1) == get_color_from_name(name_2)) { return true; }
+        else { return false; }
+    }
+    bool is_king(PieceName name) const { return PieceType::King == get_type_from_name(name); }
+    bool is_pawn(PieceName name) const {return PieceType::Pawn == get_type_from_name(name);}
+    bool is_knight(PieceName name) const { return PieceType::Knight == get_type_from_name(name); }
+    bool is_bishop(PieceName name) const { return PieceType::Bishop == get_type_from_name(name); }
+    bool is_queen(PieceName name) const { return PieceType::Queen == get_type_from_name(name); }
+    bool is_rook(PieceName name) const { return PieceType::Rook == get_type_from_name(name); }
 
 };
 
