@@ -21,11 +21,16 @@ private:
 	bool is_move_right_player(Board test_board, Move move) const;
 	
 	std::vector<Move> get_moves_rook(Board test_board, PieceName piece_name, BoardPos pos) const;
+	std::vector<Move> get_moves_bishop(Board test_board, PieceName piece_name, BoardPos pos) const;
+	std::vector<Move> get_moves_queen(Board test_board, PieceName piece_name, BoardPos pos) const;
 	
 
 
 	std::vector<Move> get_moves_across_file(Board test_board, PieceName piece_name, BoardPos pos) const;
 	std::vector<Move> get_moves_across_rank(Board test_board, PieceName piece_name, BoardPos pos) const;
+	std::vector<Move> get_moves_across_rising_diag(Board test_board, PieceName piece_name, BoardPos pos) const;
+	std::vector<Move> get_moves_across_decend_diag(Board test_board, PieceName piece_name, BoardPos pos) const;
+
 	//you can pass a source and a test and method will check
 	// 01 - Is test point on the same team as source?
 	// 02 - Is test point empty?

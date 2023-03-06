@@ -89,7 +89,7 @@ namespace ArtificeUnitTests
 	};
 	TEST_CLASS(MoveLawyer) {
 	public:
-		TEST_METHOD(LM_across_file) {
+		TEST_METHOD(LM_Rook) {
 			std::string loaded_fen = "rnbqkbnr/ppp1pppp/8/8/3N4/8/B1p1R2P/1NBQK1NR w Kkq - 0 1";
 			Board b = Board(loaded_fen);
 			LegalMovesGenerator lgm;
@@ -97,6 +97,20 @@ namespace ArtificeUnitTests
 
 			Assert::AreEqual(9, int(test_moves.size()));
 			test_moves = lgm.get_legal_moves(b, PieceName::WhiteRook, BoardPos("h1"));
+			Assert::AreEqual(0, int(test_moves.size()));
+		}
+		TEST_METHOD(LM_Bishop) {
+			std::string loaded_fen = "rnbqkbnr/ppp1pppp/8/8/3N4/8/B1p1R2P/1NBQK1NR w Kkq - 0 1";
+			Board b = Board(loaded_fen);
+			LegalMovesGenerator lgm;
+			std::vector<Move> test_moves = lgm.get_legal_moves(b, PieceName::WhiteBishop, BoardPos("c1"));
+			Assert::AreEqual(7, int(test_moves.size()));
+
+			test_moves = lgm.get_legal_moves(b, PieceName::WhiteBishop, BoardPos("a2"));
+			Assert::AreEqual(5, int(test_moves.size()));
+
+
+			test_moves = lgm.get_legal_moves(b, PieceName::BlackBishop, BoardPos("f8"));
 			Assert::AreEqual(0, int(test_moves.size()));
 		}
 	};
