@@ -88,21 +88,29 @@ namespace ArtificeUnitTests
 
 	};
 	TEST_CLASS(MoveLawyer) {
+	private:
+		std::string test_position_1 = "rnbqkbnr/ppp1pppp/8/8/3N4/8/B1p1R2P/1NBQK1NR w Kkq - 0 1";
+		LegalMovesGenerator lgm;
 	public:
 		TEST_METHOD(LM_Rook) {
-			std::string loaded_fen = "rnbqkbnr/ppp1pppp/8/8/3N4/8/B1p1R2P/1NBQK1NR w Kkq - 0 1";
-			Board b = Board(loaded_fen);
-			LegalMovesGenerator lgm;
+			Board b = Board(test_position_1);
+			
 			std::vector<Move> test_moves = lgm.get_legal_moves(b, PieceName::WhiteRook, BoardPos("e2"));
+
+			
+			
+			Logger::WriteMessage("Move for White Rook on e2");
+			for (Move i : test_moves) {
+				Logger::WriteMessage(i.get_standard_notation().c_str());
+			}
 
 			Assert::AreEqual(9, int(test_moves.size()));
 			test_moves = lgm.get_legal_moves(b, PieceName::WhiteRook, BoardPos("h1"));
 			Assert::AreEqual(0, int(test_moves.size()));
 		}
 		TEST_METHOD(LM_Bishop) {
-			std::string loaded_fen = "rnbqkbnr/ppp1pppp/8/8/3N4/8/B1p1R2P/1NBQK1NR w Kkq - 0 1";
-			Board b = Board(loaded_fen);
-			LegalMovesGenerator lgm;
+			
+			Board b = Board(test_position_1);
 			std::vector<Move> test_moves = lgm.get_legal_moves(b, PieceName::WhiteBishop, BoardPos("c1"));
 			Assert::AreEqual(7, int(test_moves.size()));
 
