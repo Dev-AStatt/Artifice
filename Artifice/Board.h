@@ -14,6 +14,11 @@ struct Bitboard {
     //Bitset has a .test and a .set() and can be called like blackPawns[i]
 };
 
+struct EnPassant {
+    bool able;
+    BoardPos target_square;
+};
+
 class Board
 {
 private:
@@ -27,6 +32,7 @@ private:
     bool Q_Castle = false;
     bool k_Castle = false;
     bool q_Castle = false;
+    EnPassant board_en_passant;
 
     
 
@@ -46,6 +52,7 @@ private:
     bool set_castle_rites_from_fen(std::string fen_sec_3);
     //this will take whatever fen string is entered and reset the board to
     //that fen string
+    bool set_en_passant_from_fen(std::string fen_sec_4);
     void overwrite_board_from_FEN(std::string FEN) {
         load_FEN(FEN);
     }
@@ -70,6 +77,7 @@ public:
     bool can_white_castle_queenside() const { return Q_Castle; }
     bool can_black_castle_kingside() const { return k_Castle; }
     bool can_black_castle_queenside() const { return q_Castle; }
+    EnPassant can_enpassant() const{ return board_en_passant; }
     void flip_side_to_move();
 
     PieceName get_piece_at(int loc) const;

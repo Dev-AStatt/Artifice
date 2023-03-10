@@ -71,9 +71,25 @@ bool Board::load_FEN(std::string FEN)
 	//
 	// Forth Section: En Passant
 	//
+	set_en_passant_from_fen(fenSections[3]);
 
 	return true;
 }
+
+bool Board::set_en_passant_from_fen(std::string fen_sec_4) {
+	if (fen_sec_4 == "-") {
+		board_en_passant = { false };
+	}
+	else {
+		board_en_passant = {
+			true,
+			BoardPos(fen_sec_4)
+		};
+	}
+
+	return true;
+}
+
 
 bool Board::set_castle_rites_from_fen(std::string fen_sec_3) {
 	for (int i = 0; i < fen_sec_3.size(); i++) {
