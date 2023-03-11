@@ -141,6 +141,12 @@ namespace ArtificeUnitTests
 					
 			Assert::AreEqual(7, int(test_moves.size()));
 		}
+		TEST_METHOD(LM_King) {
+			Board b = Board(perft_position_2);
+			std::vector<Move> test_moves = lgm.get_legal_moves(b, PieceName::WhiteKing, BoardPos("e1"));
+
+			Assert::AreEqual(4, int(test_moves.size()));
+		}
 	};
 	
 }

@@ -22,7 +22,8 @@ private:
 	Enum_Utils enum_utils;
 	std::vector<BoardPos> white_pawns_starting_pos;
 	std::vector<BoardPos> black_pawns_starting_pos;
-	std::vector<std::pair<int, int>> knight_move_table; //rank, file
+	std::vector<Transpos_Move_Table> knight_move_table;
+	std::vector<Transpos_Move_Table> king_move_table;
 
 	bool is_move_right_player(Board test_board, Move move) const;
 	
@@ -31,6 +32,7 @@ private:
 	std::vector<Move> get_moves_queen(Board test_board, PieceName piece_name, BoardPos pos) const;
 	std::vector<Move> get_moves_pawn(Board test_board, PieceName piece_name, BoardPos pos) const;
 	std::vector<Move> get_moves_knight(Board test_board, PieceName piece_name, BoardPos pos) const;
+	std::vector<Move> get_moves_king(Board test_board, PieceName piece_name, BoardPos pos) const;
 	
 
 

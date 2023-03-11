@@ -29,14 +29,24 @@ LegalMovesGenerator::LegalMovesGenerator() {
 
 	knight_move_table = {
 		//rank ,file
-	  std::make_pair(2,1),
-	  std::make_pair(1,2),
-	  std::make_pair(-1,2),
-	  std::make_pair(-2,1),
-	  std::make_pair(-2,-1),
-	  std::make_pair(-1,-2),
-	  std::make_pair(1,-2),
-	  std::make_pair(2,-1),
+		{2,1},
+		{1,2},
+		{-1,2},
+		{-2,1},
+		{-2,-1},
+		{-1,-2},
+		{1,-2},
+		{2,-1},
+	};
+	king_move_table = {
+		{1,1},
+		{1,0},
+		{1,-1},
+		{-1, 1},
+		{-1,0},
+		{-1,-1},
+		{0, 1},
+		{0, -1}
 	};
 
 
@@ -93,6 +103,9 @@ std::vector<Move> LegalMovesGenerator::get_legal_moves(Board test_board, PieceNa
 	}
 	if (piece_type == PieceType::Knight) {
 		legal_moves = get_moves_knight(test_board, piece_name, pos);
+	}
+	if (piece_type == PieceType::King) {
+		legal_moves = get_moves_king(test_board, piece_name, pos);
 	}
 
 
@@ -218,25 +231,100 @@ std::vector<Move> LegalMovesGenerator::get_moves_knight(Board test_board, PieceN
 	PieceColor knight_color = enum_utils.get_color_from_name(piece_name);
 	for (int i = 0; i < knight_move_table.size(); i++) {
 		BoardPos test_pos = BoardPos(
-			pos.get_rank() + knight_move_table[i].first,
-			pos.get_file() + knight_move_table[i].second);
-		std::cout << "Board Position: " + test_pos.get_string() << std::endl;
+			pos.get_rank() + knight_move_table[i].rank,
+			pos.get_file() + knight_move_table[i].file);
 		
 		target_piece = test_board.get_piece_at(test_pos);
 
-		if (test_pos.is_on_board() &&
-			!will_king_be_in_check(test_board, Move(pos, test_pos, MoveType::Normal))
-			) {
-			
-			if (target_piece == PieceName::Empty) {
-				legal_moves.push_back(Move(pos, test_pos, MoveType::Normal));
-			}
 
-			else if (enum_utils.get_color_from_name(target_piece) != knight_color) {
-				legal_moves.push_back(Move(pos, test_pos, MoveType::Capture));
-			}
-		}		
+
+		if (!test_pos.is_on_board()) { continue; }
+
+		target_piece = test_board.get_piece_at(test_pos);
+
+		if (will_king_be_in_check(test_board, Move(pos, test_pos, MoveType::Normal))) { continue; }
+			
+		if (target_piece == PieceName::Empty) {
+			legal_moves.push_back(Move(pos, test_pos, MoveType::Normal));
+		}
+
+		else if (enum_utils.get_color_from_name(target_piece) != knight_color) {
+			legal_moves.push_back(Move(pos, test_pos, MoveType::Capture));
+		}
+			
 	}
+
+	return legal_moves;
+}
+
+std::vector<Move> LegalMovesGenerator::get_moves_king(Board test_board, PieceName piece_name, BoardPos pos) const
+{
+	std::vector<Move> legal_moves;
+	PieceName target_piece;
+	PieceColor king_color = enum_utils.get_color_from_name(piece_name);
+	for (int i = 0; i < king_move_table.size(); i++) {
+		BoardPos test_pos = BoardPos(
+			pos.get_rank() + king_move_table[i].rank,
+			pos.get_file() + king_move_table[i].file);
+		std::cout << "Board Position: " + test_pos.get_string() << std::endl;
+
+		if (!test_pos.is_on_board()) { continue; }
+
+		target_piece = test_board.get_piece_at(test_pos);
+
+		if (will_king_be_in_check(test_board, Move(pos, test_pos, MoveType::Normal))) {continue;}
+
+		if (target_piece == PieceName::Empty) {
+			legal_moves.push_back(Move(pos, test_pos, MoveType::Normal));
+		}
+
+		else if (enum_utils.get_color_from_name(target_piece) != king_color) {
+			legal_moves.push_back(Move(pos, test_pos, MoveType::Capture));
+		}
+		
+	}
+
+	//Here is where we impliment Casteling
+	if (king_color == PieceColor::White) {
+		if (test_board.can_white_castle_kingside() &&
+			test_board.get_piece_at(63 /*h1*/) == PieceName::WhiteRook &&
+			test_board.get_piece_at(62 /*g1*/) == PieceName::Empty &&
+			test_board.get_piece_at(61 /*f1*/) == PieceName::Empty
+			) {
+			legal_moves.push_back(Move(pos, BoardPos("g1"), MoveType::Castle));
+		}
+		if (test_board.can_white_castle_queenside() &&
+			test_board.get_piece_at(56 /*a1*/) == PieceName::WhiteRook &&
+			test_board.get_piece_at(57 /*b1*/) == PieceName::Empty &&
+			test_board.get_piece_at(58 /*c1*/) == PieceName::Empty &&
+			test_board.get_piece_at(59 /*d1*/) == PieceName::Empty
+			) {
+			legal_moves.push_back(Move(pos, BoardPos("c1"), MoveType::Castle));
+		}
+	}
+
+	if (king_color == PieceColor::Black &&
+		(test_board.can_black_castle_kingside() || test_board.can_black_castle_queenside())
+		) {
+
+		if (test_board.can_black_castle_kingside() &&
+			test_board.get_piece_at(7 /*h8*/) == PieceName::BlackRook &&
+			test_board.get_piece_at(6 /*g8*/) == PieceName::Empty &&
+			test_board.get_piece_at(5 /*f8*/) == PieceName::Empty
+			) {
+			legal_moves.push_back(Move(pos, BoardPos("g8"), MoveType::Castle));
+		}
+		if (test_board.can_black_castle_queenside() &&
+			test_board.get_piece_at(0 /*a8*/) == PieceName::BlackRook &&
+			test_board.get_piece_at(1 /*b8*/) == PieceName::Empty &&
+			test_board.get_piece_at(2 /*c8*/) == PieceName::Empty &&
+			test_board.get_piece_at(3 /*d8*/) == PieceName::Empty
+			) {
+			legal_moves.push_back(Move(pos, BoardPos("c8"), MoveType::Castle));
+		}
+	}
+
+
 
 	return legal_moves;
 }

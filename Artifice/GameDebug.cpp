@@ -29,7 +29,7 @@ void GameDebug::game_debug_loop() {
 			draw_board = true;
 		}
 		if (line == "fen") {
-			board_manager.start_new_game_FEN("rnbqkbnr/ppp1pppp/8/8/3N4/8/B1p1R2P/1NBQK1NR w Kkq - 0 1");
+			board_manager.start_new_game_FEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -");
 			draw_board = true;
 		}
 		else if (line == "quit") {
