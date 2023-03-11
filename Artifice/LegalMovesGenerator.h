@@ -30,7 +30,7 @@ private:
 	std::vector<Move> get_moves_rook(Board test_board, PieceName piece_name, BoardPos pos) const;
 	std::vector<Move> get_moves_bishop(Board test_board, PieceName piece_name, BoardPos pos) const;
 	std::vector<Move> get_moves_queen(Board test_board, PieceName piece_name, BoardPos pos) const;
-	std::vector<Move> get_moves_pawn(Board test_board, PieceName piece_name, BoardPos pos) const;
+	std::vector<Move> get_moves_pawn2(Board test_board, PieceName piece_name, BoardPos pos) const;
 	std::vector<Move> get_moves_knight(Board test_board, PieceName piece_name, BoardPos pos) const;
 	std::vector<Move> get_moves_king(Board test_board, PieceName piece_name, BoardPos pos) const;
 	

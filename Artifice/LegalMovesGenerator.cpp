@@ -99,7 +99,7 @@ std::vector<Move> LegalMovesGenerator::get_legal_moves(Board test_board, PieceNa
 		legal_moves = get_moves_queen(test_board, piece_name, pos);
 	}
 	if (piece_type == PieceType::Pawn) {
-		legal_moves = get_moves_pawn(test_board, piece_name, pos);
+		legal_moves = get_moves_pawn2(test_board, piece_name, pos);
 	}
 	if (piece_type == PieceType::Knight) {
 		legal_moves = get_moves_knight(test_board, piece_name, pos);
@@ -138,11 +138,11 @@ std::vector<Move> LegalMovesGenerator::get_moves_queen(Board test_board, PieceNa
 	return add_moves_together(legal_moves_b, legal_moves_r);
 }
 
-std::vector<Move> LegalMovesGenerator::get_moves_pawn(Board test_board, PieceName piece_name, BoardPos pos) const
+
+std::vector<Move> LegalMovesGenerator::get_moves_pawn2(Board test_board, PieceName piece_name, BoardPos pos) const
 {
 	std::vector<Move> legal_moves;
-	std::vector<BoardPos> to_test;
-	std::vector<bool> usable = { false, false , false, false };
+	BoardPos test_pos;
 	int direction_offset;
 	PieceColor pawn_color = enum_utils.get_color_from_name(piece_name);
 
@@ -153,73 +153,49 @@ std::vector<Move> LegalMovesGenerator::get_moves_pawn(Board test_board, PieceNam
 	* a. The pawn may move forward to the unoccupied square immediately in front of it on
 		 the same file, or
 	  b. on its first move the pawn may move it may advance two squares along the
-	     same file provided both squares are unoccupied, or
+		 same file provided both squares are unoccupied, or
 	  c. the pawn may move to a square occupied by an opponent’s piece, which is
 		 diagonally in front of it on an adjacent file, capturing that piece.
 	*/
 
-	//Get list of possible positions
-	// [0] - Normal pawn push
-	to_test.push_back(BoardPos(pos.get_rank() + direction_offset, pos.get_file()));
-	// [1] - Double panw push
-	to_test.push_back(BoardPos(pos.get_rank() + (2 * direction_offset), pos.get_file()));
-	// [2] - Capture 1
-	to_test.push_back(BoardPos(pos.get_rank() + direction_offset, pos.get_file() + 1));
-	// [3] - Capture 2
-	to_test.push_back(BoardPos(pos.get_rank() + direction_offset, pos.get_file() - 1));
 
-	
-	//Check if forward is empty
-	if (test_board.get_piece_at(to_test[0]) == PieceName::Empty) { 
-		usable[0] = true;
+	//Forward 1 Square
+	test_pos = BoardPos(pos.get_rank() + direction_offset, pos.get_file());
+	if(!test_pos.is_on_board() || 
+		will_king_be_in_check(test_board,Move(pos,test_pos, MoveType::Normal))
+		) {}
+	else if (test_board.get_piece_at(test_pos) == PieceName::Empty) {
+		legal_moves.emplace_back(Move(pos, test_pos, MoveType::Normal));
 	}
-	//check if we can double pawn push
-	if (usable[0] &&
-		is_pawn_starting_position(pawn_color,pos) &&
-		test_board.get_piece_at(to_test[1]) == PieceName::Empty
+	//Forward 2 Square
+	test_pos = BoardPos(pos.get_rank() + (2* direction_offset), pos.get_file());
+	if (!test_pos.is_on_board() ||
+		will_king_be_in_check(test_board, Move(pos, test_pos, MoveType::Normal)) ||
+		legal_moves.size() == 0
+		) {}
+	else if (test_board.get_piece_at(test_pos) == PieceName::Empty) {
+		legal_moves.emplace_back(Move(pos, test_pos, MoveType::DoublePawnPush));
+	}
+
+	// - Capture Left
+	test_pos = BoardPos(pos.get_rank() + direction_offset, pos.get_file() + 1);
+	if (!test_pos.is_on_board() ||
+		will_king_be_in_check(test_board, Move(pos, test_pos, MoveType::Normal)) ||
+		test_board.get_piece_at(test_pos) == PieceName::Empty
+		) {}
+	else if (enum_utils.get_color_from_name(test_board.get_piece_at(test_pos)) != pawn_color) {
+		legal_moves.emplace_back(Move(pos, test_pos, MoveType::Capture));
+	}
+	// - Capture Right
+	test_pos = BoardPos(pos.get_rank() + direction_offset, pos.get_file() - 1);
+	if (!test_pos.is_on_board() ||
+		will_king_be_in_check(test_board, Move(pos, test_pos, MoveType::Normal)) ||
+		test_board.get_piece_at(test_pos) == PieceName::Empty
 		) {
-		usable[1] = true;
 	}
-	// check if diagonal moves work
-	PieceName target_piece = test_board.get_piece_at(to_test[2]);
-	if (
-		target_piece != PieceName::Empty &&
-		enum_utils.get_color_from_name(target_piece) != pawn_color
-		) {
-		usable[2] = true;
+	else if (enum_utils.get_color_from_name(test_board.get_piece_at(test_pos)) != pawn_color) {
+		legal_moves.emplace_back(Move(pos, test_pos, MoveType::Capture));
 	}
-	target_piece = test_board.get_piece_at(to_test[3]);
-	if (
-		target_piece != PieceName::Empty &&
-		enum_utils.get_color_from_name(target_piece) != pawn_color
-		) {
-		usable[3] = true;
-	}
-	//Check if on board
-	for (int i = 0; i < to_test.size(); i++) {
-		if (!to_test[i].is_on_board()) { usable[i] = false; }
-	}
-	//check if any move will end up with the king in check
-	for (int i = 0; i < to_test.size(); i++) {
-		if (usable[i]) {
-			usable[i] = !will_king_be_in_check(test_board, Move(pos, to_test[i], MoveType::Normal));
-		}
-	}
-
-	if (usable[0]) {
-
-		legal_moves.emplace_back(Move(pos, to_test[0], MoveType::Normal));				//NOTE HERE PAWNS CANT GEN CHECK MOVES ATM
-	}
-	if (usable[1]) {
-		legal_moves.emplace_back(Move(pos, to_test[1], MoveType::DoublePawnPush));
-	}
-	if (usable[2]) {
-		legal_moves.emplace_back(Move(pos, to_test[2], MoveType::Capture));
-	}
-	if (usable[3]) {
-		legal_moves.emplace_back(Move(pos, to_test[3], MoveType::Capture));
-	}
-
 	return legal_moves;
 }
 
@@ -234,9 +210,6 @@ std::vector<Move> LegalMovesGenerator::get_moves_knight(Board test_board, PieceN
 			pos.get_rank() + knight_move_table[i].rank,
 			pos.get_file() + knight_move_table[i].file);
 		
-		target_piece = test_board.get_piece_at(test_pos);
-
-
 
 		if (!test_pos.is_on_board()) { continue; }
 
