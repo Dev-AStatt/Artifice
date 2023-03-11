@@ -103,47 +103,47 @@ namespace ArtificeUnitTests
 	public:
 		TEST_METHOD(LM_Rook) {
 			Board b = Board(test_position_1);
-			std::vector<Move> test_moves = lgm.get_legal_moves(b, PieceName::WhiteRook, BoardPos("e2"));
+			std::vector<Move> test_moves = lgm.get_legal_moves_for_piece(b, PieceName::WhiteRook, BoardPos("e2"));
 			/*Logger::WriteMessage("Move for White Rook on e2");
 			for (Move i : test_moves) {
 				Logger::WriteMessage(i.get_standard_notation().c_str());
 			}*/
 
 			Assert::AreEqual(9, int(test_moves.size()));
-			test_moves = lgm.get_legal_moves(b, PieceName::WhiteRook, BoardPos("h1"));
+			test_moves = lgm.get_legal_moves_for_piece(b, PieceName::WhiteRook, BoardPos("h1"));
 			Assert::AreEqual(0, int(test_moves.size()));
 		}
 		TEST_METHOD(LM_Bishop) {
 			
 			Board b = Board(test_position_1);
-			std::vector<Move> test_moves = lgm.get_legal_moves(b, PieceName::WhiteBishop, BoardPos("c1"));
+			std::vector<Move> test_moves = lgm.get_legal_moves_for_piece(b, PieceName::WhiteBishop, BoardPos("c1"));
 			Assert::AreEqual(7, int(test_moves.size()));
 
-			test_moves = lgm.get_legal_moves(b, PieceName::WhiteBishop, BoardPos("a2"));
+			test_moves = lgm.get_legal_moves_for_piece(b, PieceName::WhiteBishop, BoardPos("a2"));
 			Assert::AreEqual(5, int(test_moves.size()));
 
 
-			test_moves = lgm.get_legal_moves(b, PieceName::BlackBishop, BoardPos("f8"));
+			test_moves = lgm.get_legal_moves_for_piece(b, PieceName::BlackBishop, BoardPos("f8"));
 			Assert::AreEqual(0, int(test_moves.size()));
 		}
 		TEST_METHOD(LM_Pawn) {
 			Board b = Board(perft_position_2);
-			std::vector<Move> test_moves = lgm.get_legal_moves(b, PieceName::WhitePawn, BoardPos("d5")); 
+			std::vector<Move> test_moves = lgm.get_legal_moves_for_piece(b, PieceName::WhitePawn, BoardPos("d5")); 
 			Assert::AreEqual(2, int(test_moves.size()));
-			test_moves = lgm.get_legal_moves(b, PieceName::WhitePawn, BoardPos("e4"));
+			test_moves = lgm.get_legal_moves_for_piece(b, PieceName::WhitePawn, BoardPos("e4"));
 			Assert::AreEqual(0, int(test_moves.size()));
-			test_moves = lgm.get_legal_moves(b, PieceName::WhitePawn, BoardPos("g2"));
+			test_moves = lgm.get_legal_moves_for_piece(b, PieceName::WhitePawn, BoardPos("g2"));
 			Assert::AreEqual(3, int(test_moves.size()));
 		}
 		TEST_METHOD(LM_Knight) {
 			Board b = Board(perft_position_2);
-			std::vector<Move> test_moves = lgm.get_legal_moves(b, PieceName::WhiteKnight, BoardPos("e5"));
+			std::vector<Move> test_moves = lgm.get_legal_moves_for_piece(b, PieceName::WhiteKnight, BoardPos("e5"));
 					
 			Assert::AreEqual(7, int(test_moves.size()));
 		}
 		TEST_METHOD(LM_King) {
 			Board b = Board(perft_position_2);
-			std::vector<Move> test_moves = lgm.get_legal_moves(b, PieceName::WhiteKing, BoardPos("e1"));
+			std::vector<Move> test_moves = lgm.get_legal_moves_for_piece(b, PieceName::WhiteKing, BoardPos("e1"));
 
 			Assert::AreEqual(4, int(test_moves.size()));
 		}

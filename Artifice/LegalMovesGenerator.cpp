@@ -68,7 +68,7 @@ bool LegalMovesGenerator::test_legal_move(Board test_board, std::string move) co
 
 	// Step 02
 	PieceName piece_name = test_board.get_piece_at(test_move.get_starting());
-	std::vector<Move> legal_moves = get_legal_moves(test_board, piece_name, test_move.get_starting());
+	std::vector<Move> legal_moves = get_legal_moves_for_piece(test_board, piece_name, test_move.get_starting());
 
 	return true;
 }
@@ -83,7 +83,7 @@ bool LegalMovesGenerator::is_move_right_player(Board test_board, Move move_to_te
 
 }
 
-std::vector<Move> LegalMovesGenerator::get_legal_moves(Board test_board, PieceName piece_name, BoardPos pos) const
+std::vector<Move> LegalMovesGenerator::get_legal_moves_for_piece(Board test_board, PieceName piece_name, BoardPos pos) const
 {
 	std::vector<Move> legal_moves;
 	PieceType piece_type = enum_utils.get_type_from_name(piece_name);
@@ -110,6 +110,28 @@ std::vector<Move> LegalMovesGenerator::get_legal_moves(Board test_board, PieceNa
 
 
 	return legal_moves;
+}
+
+std::vector<Move> LegalMovesGenerator::get_legal_moves_for_side(Board test_board, PieceColor side) const
+{
+
+	std::vector<Move> all_legal_moves;
+	PieceColor side_to_move = test_board.get_side_to_move();
+	Bitboard side_bb = test_board.get_copy_side_bitboard(side_to_move);
+	for (int i = 0; i < side_bb.bb.size(); i++) {
+		if (!side_bb.bb.test(i)) { continue; }
+
+		PieceName piece = test_board.get_piece_at(i);
+		BoardPos pos = BoardPos(i);
+
+		all_legal_moves = add_moves_together(
+			all_legal_moves,
+			get_legal_moves_for_piece(test_board, piece, pos)
+			);
+
+	}
+	return all_legal_moves;
+
 }
 
 // 0----------------------------------------------------------------0
@@ -239,7 +261,7 @@ std::vector<Move> LegalMovesGenerator::get_moves_king(Board test_board, PieceNam
 		BoardPos test_pos = BoardPos(
 			pos.get_rank() + king_move_table[i].rank,
 			pos.get_file() + king_move_table[i].file);
-		std::cout << "Board Position: " + test_pos.get_string() << std::endl;
+		//std::cout << "Board Position: " + test_pos.get_string() << std::endl;
 
 		if (!test_pos.is_on_board()) { continue; }
 

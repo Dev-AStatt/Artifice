@@ -12,13 +12,14 @@ void GameDebug::print_opening_text() const {
 	std::cout << "01 - 'new'  - Start new game" << std::endl;
 	std::cout << "02 - 'fen'  - start game from FEN string" << std::endl;
 	std::cout << "03 - 'quit' - quit the debugger" << std::endl;
+	std::cout << "04 - 'perft test <test>' - will run perft testing" << std::endl;
 }
 
 void GameDebug::print_help() const {
 	std::cout << "Options During Debug Mode:" << std::endl;
 	std::cout << "01 - 'test ' <move> - Will test if a move is legal" << std::endl;
 	std::cout << "02 - 'flip turn' - will flip who's turn it is" << std::endl;
-	std::cout << "03 - 'perft test <test>' - will run perft testing" << std::endl;
+	
 }
 
 

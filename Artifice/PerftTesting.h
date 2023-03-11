@@ -14,6 +14,12 @@ enum class TestType {
 	Checkmates
 };
 
+struct PerftResults {
+	int depth;
+	std::vector<Move> moves;
+	int test_result;
+};
+
 
 class PerftTesting
 {
@@ -31,11 +37,15 @@ private:
 
 	int max_depth_for_test;
 	
+	LegalMovesGenerator lgm;
+
 
 	void build_test_1();
 	void build_test_2();
 	//will return true if passed
-	bool run_test(TestType test_type, int depth);
+	bool run_test(TestType test_type, int depth) const;
+	void print_results(std::vector<PerftResults> results, TestType type) const;
+	std::string test_type_to_string(TestType type) const;
 
 
 

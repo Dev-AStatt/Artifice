@@ -55,13 +55,52 @@ void PerftTesting::build_test_2() {
 
 }
 
-bool PerftTesting::run_test(TestType test_type, int depth)
+std::string PerftTesting::test_type_to_string(TestType type) const
 {
+	std::string type_string;
+	if (type == TestType::Nodes) { type_string = "Nodes"; }
+	if (type == TestType::Captures) { type_string = "Captures"; }
+	if (type == TestType::EnPassant) { type_string = "EnPassant"; }
+	if (type == TestType::Castles) { type_string = "Castles"; }
+	if (type == TestType::Promotions) { type_string = "Promoations"; }
+	if (type == TestType::Checks) { type_string = "Checks"; }
+	if (type == TestType::DiscoveryChecks) { type_string = "Discovery Checks"; }
+	if (type == TestType::DoubleChecks) { type_string = "Double Checks"; }
+	if (type == TestType::Checkmates) { type_string = "Checkmates"; }
+
+	return type_string;
+}
 
 
 
+bool PerftTesting::run_test(TestType test_type, int depth) const
+{
+	std::vector<PerftResults> results;
 
+	Board test_board = Board(test_board_string);
+	std::vector<Move> ret_moves = lgm.get_legal_moves_for_side(test_board,PieceColor::White);
+
+	PerftResults r_1 = { 1, ret_moves, results_nodes[0] };
+
+	results.emplace_back(r_1);
+
+
+
+	print_results(results, test_type);
+	
 
 	return false;
 }
 
+void PerftTesting::print_results(std::vector<PerftResults> results, TestType type) const
+{
+	std::string type_str = test_type_to_string(type);
+	std::cout << "Test Results for Test " << "1" << std::endl;
+	std::cout << "Depth |  " << type_str <<" Expected |  " << type_str << " Results" << std::endl;
+	for (PerftResults r : results) {
+		std::cout << r.depth << "     |  " << r.test_result << "		|  " << r.moves.size() << std::endl;
+
+	}
+
+
+}
