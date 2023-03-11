@@ -2,6 +2,7 @@
 #include "Board.h"
 #include "Move.h"
 #include "LegalMovesGenerator.h"
+#include "PerftTesting.h"
 
 class BoardManager {
 private:
@@ -23,5 +24,9 @@ public:
 	//will test a move on a current board is a legal move
 	//input must be just the move. ie e2e4
 	bool test_legal_move(Board test_board, std::string move) const;
+
+	void run_perft_tests(int depth) const; 
+
+
 };
 

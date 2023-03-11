@@ -33,8 +33,6 @@ private:
 	std::vector<Move> get_moves_pawn2(Board test_board, PieceName piece_name, BoardPos pos) const;
 	std::vector<Move> get_moves_knight(Board test_board, PieceName piece_name, BoardPos pos) const;
 	std::vector<Move> get_moves_king(Board test_board, PieceName piece_name, BoardPos pos) const;
-	
-
 
 	std::vector<Move> get_moves_across_file(Board test_board, PieceName piece_name, BoardPos pos) const;
 	std::vector<Move> get_moves_across_rank(Board test_board, PieceName piece_name, BoardPos pos) const;
@@ -70,6 +68,7 @@ private:
 public:
 	LegalMovesGenerator();
 	std::vector<Move> get_legal_moves(Board test_board, PieceName piece_name, BoardPos pos) const;
+	//std::vector<Move> 
 	//will test a move on a current board is a legal move
 	//input must be just the move. ie e2e4
 	bool test_legal_move(Board test_board, std::string move) const;

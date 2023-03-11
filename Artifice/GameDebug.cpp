@@ -18,6 +18,7 @@ void GameDebug::print_help() const {
 	std::cout << "Options During Debug Mode:" << std::endl;
 	std::cout << "01 - 'test ' <move> - Will test if a move is legal" << std::endl;
 	std::cout << "02 - 'flip turn' - will flip who's turn it is" << std::endl;
+	std::cout << "03 - 'perft test <test>' - will run perft testing" << std::endl;
 }
 
 
@@ -52,6 +53,11 @@ void GameDebug::game_debug_loop() {
 			else {
 				std::cout << "Move: " + line.substr(5, 10) + " Is an Illegal Move" << std::endl;
 			}
+		}
+
+		else if (line.substr(0, 11) == "perft test ") {
+			std::cout << "Running Perft Test " + line.substr(11, 12) << std::endl;
+			board_manager.run_perft_tests(2);
 		}
 
 		if (draw_board) {

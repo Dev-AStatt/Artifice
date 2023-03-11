@@ -19,6 +19,15 @@ bool BoardManager::test_legal_move(Board test_board, std::string move) const
 	return legal_move_gen.test_legal_move(test_board, move);
 }
 
+void BoardManager::run_perft_tests(int depth) const
+{
+	PerftTesting perft_tester = PerftTesting(1,TestType::Nodes, 2);
+	
+
+
+
+}
+
 
 
 

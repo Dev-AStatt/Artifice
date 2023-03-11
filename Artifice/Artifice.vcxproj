@@ -133,6 +133,7 @@
     <ClCompile Include="LegalMovesGenerator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Move.cpp" />
+    <ClCompile Include="PerftTesting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="GameDebug.h" />
     <ClInclude Include="LegalMovesGenerator.h" />
     <ClInclude Include="Move.h" />
+    <ClInclude Include="PerftTesting.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\External_Resources\Board_Excel.xlsx" />
