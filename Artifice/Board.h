@@ -4,7 +4,8 @@
 #include <vector>
 #include <bitset>
 #include "cEnums.h"
-#include "BoardPos.h"
+
+#include "Move.h"
 
 //Global Variables Because I need to. 
 
@@ -61,7 +62,11 @@ private:
     void create_bitboards();
     //call this after every change to a bitboard, to update the bitboards
     //that are combinations of other bitboards like sides.
-    bool update_changes_to_mesh_boards(PieceName p_name, int board_id);
+    bool insert_piece_into_side_bb(PieceName p_name, int board_id);
+
+    bool update_mesh_boards();
+    
+
     //Simple multiplication function for repeted 2d to 1d conversion
     int get_board_ID(int rank, int file) const {return rank * 8 + file;}
 public:
@@ -86,6 +91,8 @@ public:
     //This will only return one or the other black or white bitboards, so dont pass
     //in anything weird, or your just going to get hte black bitboard back. 
     Bitboard get_copy_side_bitboard(PieceColor color) const;
+    //will return false if cannot make move
+    bool make_move(Move move);
     
 
 };

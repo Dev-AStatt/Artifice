@@ -21,7 +21,7 @@ bool BoardManager::test_legal_move(Board test_board, std::string move) const
 
 void BoardManager::run_perft_tests(int depth) const
 {
-	PerftTesting perft_tester = PerftTesting(1,TestType::Nodes, 2);
+	PerftTesting perft_tester = PerftTesting(1,TestType::Nodes, depth);
 	
 
 

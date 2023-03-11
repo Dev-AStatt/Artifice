@@ -3,6 +3,7 @@
 PerftTesting::PerftTesting(int test_number, TestType test_type, int depth)
 {
 	build_test_1();
+	if (depth > max_depth_for_test) { depth = max_depth_for_test; }
 	run_test(test_type, depth);
 
 }
@@ -71,26 +72,77 @@ std::string PerftTesting::test_type_to_string(TestType type) const
 	return type_string;
 }
 
-
+std::vector<Move> add_moves_together(std::vector<Move> m1, std::vector<Move> m2) {
+	std::vector<Move> ret_vect = m1;
+	std::copy(m2.begin(), m2.end(), std::back_inserter(ret_vect));
+	return ret_vect;
+}
 
 bool PerftTesting::run_test(TestType test_type, int depth) const
 {
 	std::vector<PerftResults> results;
 
-	Board test_board = Board(test_board_string);
-	std::vector<Move> ret_moves = lgm.get_legal_moves_for_side(test_board,PieceColor::White);
+	Board starting_board = Board(test_board_string);
+	
+	
+	for (int i = 0; i <= depth; i++) {
+		PerftResults r = {
+			i,
+			count_nodes(i, starting_board),
+			results_nodes[i]
+		};
 
-	PerftResults r_1 = { 1, ret_moves, results_nodes[0] };
+		results.emplace_back(r);
 
-	results.emplace_back(r_1);
-
-
-
+	}
 	print_results(results, test_type);
 	
 
 	return false;
 }
+
+int PerftTesting::count_nodes(int depth, Board starting_board) const {
+	if (depth == 0) { return 1; }
+
+
+	std::vector<Move> new_moves = lgm.get_legal_moves_for_side(starting_board, starting_board.get_side_to_move());
+	int number_positions = 0;
+
+	for (Move m : new_moves) {
+		Board new_board = starting_board;
+		new_board.make_move(m);
+		number_positions += count_nodes(depth - 1, new_board);
+	}
+	return number_positions;
+}
+
+//PerftResults PerftTesting::get_next_depth(Board starting_board, std::vector<Move> last_perft_moves,int current_depth, bool print) const {
+//	
+//	std::vector<Move> total_moves;
+//	Board test_board;
+//
+//	for (Move m : last_perft_moves) {
+//		test_board = starting_board;
+//		test_board.make_move(m);
+//
+//		std::vector<Move> new_moves = lgm.get_legal_moves_for_side(test_board, test_board.get_side_to_move());
+//		if (print) {
+//			std::cout << "Printing Moves After: " << m.get_standard_notation() << std::endl;
+//			for (Move nm : new_moves) {
+//				std::cout << nm.get_standard_notation() << std::endl;
+//			}
+//		}
+//		
+//		total_moves = add_moves_together(
+//			total_moves,
+//			new_moves
+//		);
+//	}
+//
+//	PerftResults output = {current_depth, total_moves, results_nodes[current_depth]};
+//	return output;
+//
+//}
 
 void PerftTesting::print_results(std::vector<PerftResults> results, TestType type) const
 {
@@ -98,9 +150,10 @@ void PerftTesting::print_results(std::vector<PerftResults> results, TestType typ
 	std::cout << "Test Results for Test " << "1" << std::endl;
 	std::cout << "Depth |  " << type_str <<" Expected |  " << type_str << " Results" << std::endl;
 	for (PerftResults r : results) {
-		std::cout << r.depth << "     |  " << r.test_result << "		|  " << r.moves.size() << std::endl;
+		std::cout << r.depth << "     |  " << r.test_result << "		|  " << r.calculated << std::endl;
 
 	}
 
 
 }
+

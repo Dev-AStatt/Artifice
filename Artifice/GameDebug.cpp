@@ -58,7 +58,10 @@ void GameDebug::game_debug_loop() {
 
 		else if (line.substr(0, 11) == "perft test ") {
 			std::cout << "Running Perft Test " + line.substr(11, 12) << std::endl;
-			board_manager.run_perft_tests(2);
+
+			int depth = std::stoi(line.substr(11));
+
+			board_manager.run_perft_tests(depth);
 		}
 
 		if (draw_board) {

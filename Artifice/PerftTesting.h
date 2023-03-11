@@ -16,7 +16,7 @@ enum class TestType {
 
 struct PerftResults {
 	int depth;
-	std::vector<Move> moves;
+	int calculated;
 	int test_result;
 };
 
@@ -34,11 +34,11 @@ private:
 	std::vector<int> results_discovery_checks = {};
 	std::vector<int> results_double_checks = {};
 	std::vector<int> results_checkmates = {};
-
-	int max_depth_for_test;
 	
-	LegalMovesGenerator lgm;
+	int max_depth_for_test;
 
+	LegalMovesGenerator lgm;
+	
 
 	void build_test_1();
 	void build_test_2();
@@ -46,6 +46,11 @@ private:
 	bool run_test(TestType test_type, int depth) const;
 	void print_results(std::vector<PerftResults> results, TestType type) const;
 	std::string test_type_to_string(TestType type) const;
+
+	
+//	PerftResults get_next_depth(Board starting_board, std::vector<Move> last_perft_moves, int current_depth, bool print) const;
+
+	int count_nodes(int depth, Board starting_board) const;
 
 
 

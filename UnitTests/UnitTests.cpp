@@ -14,6 +14,23 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ArtificeUnitTests
 {
+	TEST_CLASS(BoardClass) {
+	public:
+		TEST_METHOD(Update_Mesh) {
+			Board test_board = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+			Bitboard white_bitboard = test_board.get_copy_side_bitboard(PieceColor::White);
+
+			Assert::AreEqual(16, int(white_bitboard.bb.count()));
+
+			Move m = Move("d2e3");
+			test_board.make_move(m);
+			white_bitboard = test_board.get_copy_side_bitboard(PieceColor::White);
+			Assert::AreEqual(16, int(white_bitboard.bb.count()));
+
+		}
+
+	};
+
 	TEST_CLASS(MoveClass) {
 	public:
 		TEST_METHOD(TestThatTestsWork) {Assert::AreEqual(1, 1);}
@@ -60,6 +77,7 @@ namespace ArtificeUnitTests
 			
 		}
 	};
+
 	TEST_CLASS(Board_Pos_Class) {
 	public:
 		TEST_METHOD(Constructor_Baord_ID) {
@@ -85,7 +103,6 @@ namespace ArtificeUnitTests
 			auto func = [] { BoardPos("ww"); };
 			Assert::ExpectException<std::invalid_argument>(func);
 		}
-
 		TEST_METHOD(String_From_BoardPos) {
 			BoardPos bp = BoardPos(57); //b1
 			std::string standard_notation = "b1";
@@ -94,6 +111,7 @@ namespace ArtificeUnitTests
 		
 
 	};
+
 	TEST_CLASS(MoveLawyer) {
 	private:
 		std::string test_position_1 = "rnbqkbnr/ppp1pppp/8/8/3N4/8/B1p1R2P/1NBQK1NR w Kkq - 0 1";

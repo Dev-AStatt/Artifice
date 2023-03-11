@@ -42,8 +42,6 @@ void Board::flip_side_to_move() {
 	else if (side_to_move == PieceColor::Black) { side_to_move = PieceColor::White; }
 }
 
-
-
 bool Board::load_FEN(std::string FEN)
 {
 	std::string s;
@@ -89,7 +87,6 @@ bool Board::set_en_passant_from_fen(std::string fen_sec_4) {
 
 	return true;
 }
-
 
 bool Board::set_castle_rites_from_fen(std::string fen_sec_3) {
 	for (int i = 0; i < fen_sec_3.size(); i++) {
@@ -151,7 +148,7 @@ void Board::insert_piece_into_bb(PieceName p_name, int id) {
 		//set the piece_bitboard
 		it->bb.set(id);
 		//Set the multi-bitboards
-		update_changes_to_mesh_boards(p_name, id);
+		insert_piece_into_side_bb(p_name, id);
 	}
 
 }
@@ -163,8 +160,58 @@ Bitboard Board::get_copy_side_bitboard(PieceColor color) const {
 	else { return side_bitboards[1]; }
 }
 
+bool Board::make_move(Move move)
+{
+	BoardPos starting_pos = move.get_starting();
+	BoardPos ending_pos = move.get_ending();
 
-bool Board::update_changes_to_mesh_boards(PieceName p_name, int board_id) {
+	PieceName piece = get_piece_at(starting_pos);
+	if (piece == PieceName::Empty) { return false; }
+
+	//if its a capture, we need to find and remove the capture from other bitboard
+	if (move.get_move_type() == MoveType::Capture &&
+		get_piece_at(ending_pos) != PieceName::Empty
+		) {
+		PieceName target_piece = get_piece_at(ending_pos);
+		auto is_name = [target_piece](Bitboard& b) { return b.name == target_piece; };
+		auto it = std::find_if(piece_bitboards.begin(), piece_bitboards.end(), is_name);
+
+		if (it != std::end(piece_bitboards)) {
+			//Remove captured piece from its bitboard
+			it->bb.reset(ending_pos.get_board_ID());
+		}
+	}
+
+	auto is_name = [piece](Bitboard& b) { return b.name == piece; };
+	auto it = std::find_if(piece_bitboards.begin(), piece_bitboards.end(), is_name);
+
+	if (it == std::end(piece_bitboards)) { return false; }
+	//Insert the bitboard 
+	it->bb.reset(starting_pos.get_board_ID());
+	it->bb.set(ending_pos.get_board_ID());
+	
+	//update the mesh bitboards after the move. 
+	update_mesh_boards();
+	flip_side_to_move();
+
+	return true;
+}
+
+bool Board::update_mesh_boards() {
+	side_bitboards[0].bb.reset();
+	side_bitboards[1].bb.reset();
+
+	for (int i = 0; i < 6; i++) {
+		side_bitboards[0].bb |= piece_bitboards[i].bb;
+	}
+	for (int i = 6; i < 12; i++) {
+		side_bitboards[1].bb |= piece_bitboards[i].bb;
+	}
+	return true;
+}
+
+
+bool Board::insert_piece_into_side_bb(PieceName p_name, int board_id) {
 	Enum_Utils enum_utils;
 	PieceColor color = enum_utils.get_color_from_name(p_name);
 
