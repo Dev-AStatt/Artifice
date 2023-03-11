@@ -240,7 +240,7 @@ bool Board::sort_fen_pieces_into_bitboards(std::string fen_sec_1) {
 			rank = ++rank;
 			break;
 		case 'k':
-			insert_piece_into_bb(PieceName::BlackKnight, board_id);
+			insert_piece_into_bb(PieceName::BlackKing, board_id);
 			rank = ++rank;
 			break;
 		case 'p':
