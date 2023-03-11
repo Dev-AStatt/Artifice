@@ -24,7 +24,8 @@ enum class PieceName
 enum class PieceColor
 {
     White,
-    Black
+    Black,
+    None,
 };
 
 enum class PieceType
@@ -62,7 +63,7 @@ public:
     Enum_Utils() {}
 
     PieceColor get_color_from_name(PieceName name) const {
-        if (name == PieceName::Empty   ) { throw std::invalid_argument("Recieved PieceName::Empty in get_color_from_name()"); }
+        if (name == PieceName::Empty)    { return PieceColor::None; }
         if (name == PieceName::AllWhite) { return PieceColor::White; }
         if (name == PieceName::AllBlack) { return PieceColor::Black; }
 

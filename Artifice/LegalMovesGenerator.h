@@ -10,6 +10,11 @@ struct Return_For_Move_Validation {
 
 };
 
+struct Transpos_Move_Table {
+	int rank;
+	int file;
+};
+
 class LegalMovesGenerator
 {
 

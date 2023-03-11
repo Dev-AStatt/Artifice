@@ -212,24 +212,31 @@ std::vector<Move> LegalMovesGenerator::get_moves_pawn(Board test_board, PieceNam
 
 std::vector<Move> LegalMovesGenerator::get_moves_knight(Board test_board, PieceName piece_name, BoardPos pos) const
 {
+	
 	std::vector<Move> legal_moves;
-	for (int i; i < knight_move_table.size(); i++) {
+	PieceName target_piece;
+	PieceColor knight_color = enum_utils.get_color_from_name(piece_name);
+	for (int i = 0; i < knight_move_table.size(); i++) {
 		BoardPos test_pos = BoardPos(
 			pos.get_rank() + knight_move_table[i].first,
 			pos.get_file() + knight_move_table[i].second);
+		std::cout << "Board Position: " + test_pos.get_string() << std::endl;
+		
+		target_piece = test_board.get_piece_at(test_pos);
 
-		//for each loop, check if the next position is a move or not
-		Return_For_Move_Validation ret_val = if_endpoint_legal_get_move(test_board, pos, test_pos, piece_name);
-		if (ret_val.usable_move) {
-			//test the out paramaters of ret_val
-			legal_moves.emplace_back(ret_val.returned_move);
-			if (!ret_val.continue_searching) { break; }
-		}
-		else { break; } //if move unusable - break from the loop
+		if (test_pos.is_on_board() &&
+			!will_king_be_in_check(test_board, Move(pos, test_pos, MoveType::Normal))
+			) {
+			
+			if (target_piece == PieceName::Empty) {
+				legal_moves.push_back(Move(pos, test_pos, MoveType::Normal));
+			}
+
+			else if (enum_utils.get_color_from_name(target_piece) != knight_color) {
+				legal_moves.push_back(Move(pos, test_pos, MoveType::Capture));
+			}
+		}		
 	}
-
-
-
 
 	return legal_moves;
 }
@@ -437,6 +444,12 @@ Return_For_Move_Validation LegalMovesGenerator::if_endpoint_legal_get_move(
 
 	//Create a move of type that may have been changed in the if checks
 	Move m = Move(source_pos, test_pos, type);
+
+	//check if the king will be in check
+	if (useable_data) {
+		useable_data = !will_king_be_in_check(test_board, m);
+	}
+	
 	return Return_For_Move_Validation{ useable_data, continue_searching_after, m };
 }
 
