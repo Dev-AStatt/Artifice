@@ -156,6 +156,8 @@ void Board::insert_piece_into_bb(PieceName p_name, int id) {
 
 }
 
+
+
 Bitboard Board::get_copy_side_bitboard(PieceColor color) const {
 	if (color == PieceColor::White) { return side_bitboards[0]; }
 	else { return side_bitboards[1]; }

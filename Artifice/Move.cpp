@@ -22,7 +22,9 @@ Move::Move(std::string standard_notation) : standard_notation(standard_notation)
 	}
 }
 
-Move::Move(BoardPos starting, BoardPos ending, MoveType type) : starting(starting), ending(ending), type(type) {}
+Move::Move(BoardPos starting, BoardPos ending, MoveType type) : starting(starting), ending(ending), type(type) {
+	build_standard_notation();
+}
 
 
 
@@ -45,6 +47,11 @@ void Move::event_move(std::string standard_notation) {
 	starting = BoardPos(standard_notation.substr(0, 2));
 	ending = BoardPos(standard_notation.substr(3, 5));
 	type = MoveType::Capture;
+}
+
+void Move::build_standard_notation()
+{
+	standard_notation = starting.get_string() + ending.get_string();
 }
 
 

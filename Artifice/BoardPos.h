@@ -43,7 +43,20 @@ public:
 	int get_board_ID() const { return board_ID; }
 	int get_rank() const { return rank; }
 	int get_file() const { return file; }
-	std::string get_string() const { return as_string; }
+	std::string get_string() { 
+		char letter = char(file + 97); 
+		as_string = std::string() + letter + std::to_string(8 - rank);
+		return as_string;
+	}
+	bool is_on_board() const {
+		if (0 <= rank && rank <= 7) {
+			if (0 <= file && file <= 7) {
+				return true;
+			}
+			else { return false;}
+		}
+		else { return false; }
+	}
 
 
 

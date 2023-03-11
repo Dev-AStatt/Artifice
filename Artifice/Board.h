@@ -82,6 +82,7 @@ public:
 
     PieceName get_piece_at(int loc) const;
     PieceName get_piece_at(BoardPos pos) const;
+
     //This will only return one or the other black or white bitboards, so dont pass
     //in anything weird, or your just going to get hte black bitboard back. 
     Bitboard get_copy_side_bitboard(PieceColor color) const;

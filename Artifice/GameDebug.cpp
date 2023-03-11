@@ -52,7 +52,6 @@ void GameDebug::game_debug_loop() {
 			else {
 				std::cout << "Move: " + line.substr(5, 10) + " Is an Illegal Move" << std::endl;
 			}
-
 		}
 
 		if (draw_board) {

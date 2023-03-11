@@ -13,11 +13,12 @@ enum class MoveType {
 	Promotion,
 	Check,
 	Normal,
+	DoublePawnPush,
 };
 
 class Move {
 private:
-	std::string const standard_notation;
+	std::string standard_notation;
 	BoardPos starting;
 	BoardPos ending;
 	MoveType type;
@@ -29,7 +30,7 @@ private:
 
 	void event_move(std::string standard_notation);
 
-	
+	void build_standard_notation();
 
 public:
 	Move(std::string move_string);

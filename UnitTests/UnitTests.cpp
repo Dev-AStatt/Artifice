@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include "pch.h"
 #include "CppUnitTest.h"
 
@@ -84,25 +85,29 @@ namespace ArtificeUnitTests
 			auto func = [] { BoardPos("ww"); };
 			Assert::ExpectException<std::invalid_argument>(func);
 		}
+
+		TEST_METHOD(String_From_BoardPos) {
+			BoardPos bp = BoardPos(57); //b1
+			std::string standard_notation = "b1";
+			Assert::AreEqual(standard_notation, bp.get_string());
+		}
 		
 
 	};
 	TEST_CLASS(MoveLawyer) {
 	private:
 		std::string test_position_1 = "rnbqkbnr/ppp1pppp/8/8/3N4/8/B1p1R2P/1NBQK1NR w Kkq - 0 1";
+		std::string perft_position_2 = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -";
+
 		LegalMovesGenerator lgm;
 	public:
 		TEST_METHOD(LM_Rook) {
 			Board b = Board(test_position_1);
-			
 			std::vector<Move> test_moves = lgm.get_legal_moves(b, PieceName::WhiteRook, BoardPos("e2"));
-
-			
-			
-			Logger::WriteMessage("Move for White Rook on e2");
+			/*Logger::WriteMessage("Move for White Rook on e2");
 			for (Move i : test_moves) {
 				Logger::WriteMessage(i.get_standard_notation().c_str());
-			}
+			}*/
 
 			Assert::AreEqual(9, int(test_moves.size()));
 			test_moves = lgm.get_legal_moves(b, PieceName::WhiteRook, BoardPos("h1"));
@@ -120,6 +125,15 @@ namespace ArtificeUnitTests
 
 			test_moves = lgm.get_legal_moves(b, PieceName::BlackBishop, BoardPos("f8"));
 			Assert::AreEqual(0, int(test_moves.size()));
+		}
+		TEST_METHOD(LM_Pawn) {
+			Board b = Board(perft_position_2);
+			std::vector<Move> test_moves = lgm.get_legal_moves(b, PieceName::WhitePawn, BoardPos("d5")); 
+			Assert::AreEqual(2, int(test_moves.size()));
+			test_moves = lgm.get_legal_moves(b, PieceName::WhitePawn, BoardPos("e4"));
+			Assert::AreEqual(0, int(test_moves.size()));
+			test_moves = lgm.get_legal_moves(b, PieceName::WhitePawn, BoardPos("g2"));
+			Assert::AreEqual(3, int(test_moves.size()));
 		}
 	};
 	
