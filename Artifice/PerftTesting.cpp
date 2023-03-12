@@ -94,7 +94,7 @@ bool PerftTesting::run_perft_test(TestType test_type, int depth) const
 	}
 	print_perft_results(results, test_type);
 
-	run_test_after_move(starting_board, depth - 1);
+	//run_test_after_move(starting_board, depth - 1);
 
 
 
