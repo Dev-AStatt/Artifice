@@ -195,7 +195,9 @@ std::vector<Move> LegalMovesGenerator::get_moves_pawn2(Board test_board, PieceNa
 		will_king_be_in_check(test_board, Move(pos, test_pos, MoveType::Normal)) ||
 		legal_moves.size() == 0
 		) {}
-	else if (test_board.get_piece_at(test_pos) == PieceName::Empty) {
+	else if (test_board.get_piece_at(test_pos) == PieceName::Empty &&
+			is_pawn_starting_position(pawn_color,pos)
+		) {
 		legal_moves.emplace_back(Move(pos, test_pos, MoveType::DoublePawnPush));
 	}
 

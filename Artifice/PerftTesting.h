@@ -21,6 +21,8 @@ struct PerftResults {
 };
 
 
+
+
 class PerftTesting
 {
 private:
@@ -37,20 +39,25 @@ private:
 	
 	int max_depth_for_test;
 
+	std::vector<Move> white_opening_moves;
+	void build_opening_moves();
+
 	LegalMovesGenerator lgm;
 	
 
 	void build_test_1();
 	void build_test_2();
 	//will return true if passed
-	bool run_test(TestType test_type, int depth) const;
-	void print_results(std::vector<PerftResults> results, TestType type) const;
+	bool run_perft_test(TestType test_type, int depth) const;
+	bool run_test_after_move(Board starting_board, int depth) const;
+	void print_perft_results(std::vector<PerftResults> results, TestType type) const;
+	void print_init_pos_summary(Move starting, std::vector<PerftResults> results) const;
 	std::string test_type_to_string(TestType type) const;
 
 	
 //	PerftResults get_next_depth(Board starting_board, std::vector<Move> last_perft_moves, int current_depth, bool print) const;
 
-	int count_nodes(int depth, Board starting_board) const;
+	int count_nodes(int depth, Board starting_board, bool print) const;
 
 
 
